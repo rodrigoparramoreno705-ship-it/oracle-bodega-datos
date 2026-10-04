@@ -626,7 +626,7 @@ th { background: #eee; } tr { break-inside: avoid; }
 pre { font-family: 'DejaVu Sans Mono', monospace; font-size: 7.6pt; line-height: 1.3; background: #f5f5f5;
       border: 1px solid #ccc; padding: 6px 8px; white-space: pre-wrap; margin: 4px 0 10px; }
 .ref { text-indent: -1.27cm; padding-left: 1.27cm; }
-.portada { height: 20cm; text-align: center; break-after: page; padding-top: 4cm; }
+.portada { text-align: center; break-after: page; padding-top: 5cm; }
 .portada p { text-indent: 0; text-align: center; }
 """
 
