@@ -1,0 +1,28 @@
+### 2026-10-04 12:31:46 UTC
+root@cloud-vm:~# docker exec oracle-free sqlplus -s / as sysdba @/tmp/ev02/version.sql
+
+BANNER_FULL
+--------------------------------------------------------------------------------
+Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for F
+ree
+Version 23.26.3.0.0
+
+
+
+INSTANCE_N HOST_NAME	  VERSION_FULL STATUS	    DATABASE_STATUS
+---------- -------------- ------------ ------------ -----------------
+FREE	   4261587fd73f   23.26.3.0.0  OPEN	    ACTIVE
+
+
+NAME	 OPEN_MODE	      LOG_MODE	   CDB
+-------- -------------------- ------------ ---
+FREE	 READ WRITE	      NOARCHIVELOG YES
+
+
+    CON_ID PDB_NAME   OPEN_MODE
+---------- ---------- ----------
+	 2 PDB$SEED   READ ONLY
+	 3 FREEPDB1   READ WRITE
+
+[codigo de salida: 0]
+

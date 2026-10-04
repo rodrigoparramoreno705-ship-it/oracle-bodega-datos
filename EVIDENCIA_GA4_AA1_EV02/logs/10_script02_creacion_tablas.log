@@ -1,0 +1,365 @@
+### 2026-10-04 12:39:36 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql tech_transition/TechT2026@//localhost:1521/FREEPDB1 @sql/02_creacion_tablas.sql 2>&1 | grep -v '^Picked up JAVA_TOOL_OPTIONS'
+
+SQLcl: Release 26.3 Production on Sun Oct 04 12:39:37 2026
+
+Copyright (c) 1982, 2026, Oracle.  All rights reserved.
+
+Connected to:
+Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0
+
+SQL> set feedback on
+SQL> set linesize 150
+SQL> set pagesize 50
+SQL> 
+SQL> show user
+USER is "TECH_TRANSITION"
+SQL> 
+SQL> -- ---------------------------------------------------------------------
+SQL> -- 1. CLIENTES
+SQL> -- ---------------------------------------------------------------------
+SQL> create table clientes (
+  2    id_cliente        number(6)      not null,
+  3    tipo_documento    varchar2(3)    not null,
+  4    numero_documento  varchar2(15)   not null,
+  5    nombre_cliente    varchar2(100)  not null,
+  6    telefono          varchar2(15),
+  7    correo            varchar2(100),
+  8    direccion         varchar2(120),
+  9    ciudad            varchar2(50)   not null,
+ 10    fecha_registro    date           default sysdate not null,
+ 11    constraint pk_clientes primary key (id_cliente),
+ 12    constraint uq_clientes_documento unique (tipo_documento, numero_documento),
+ 13    constraint ck_clientes_tipo_doc check (tipo_documento in ('CC', 'CE', 'NIT')),
+ 14    constraint ck_clientes_correo check (correo is null or correo like '%_@_%._%')
+ 15  );
+
+Table CLIENTES created.
+
+SQL> 
+SQL> -- ---------------------------------------------------------------------
+SQL> -- 2. SUCURSALES
+SQL> -- ---------------------------------------------------------------------
+SQL> create table sucursales (
+  2    id_sucursal      number(4)      not null,
+  3    nombre_sucursal  varchar2(60)   not null,
+  4    ciudad           varchar2(50)   not null,
+  5    direccion        varchar2(120)  not null,
+  6    telefono         varchar2(15),
+  7    constraint pk_sucursales primary key (id_sucursal),
+  8    constraint uq_sucursales_nombre unique (nombre_sucursal)
+  9  );
+
+Table SUCURSALES created.
+
+SQL> 
+SQL> -- ---------------------------------------------------------------------
+SQL> -- 3. FORMAS_PAGO
+SQL> -- ---------------------------------------------------------------------
+SQL> create table formas_pago (
+  2    id_forma_pago  number(2)     not null,
+  3    descripcion    varchar2(40)  not null,
+  4    dias_plazo     number(3)     default 0 not null,
+  5    constraint pk_formas_pago primary key (id_forma_pago),
+  6    constraint uq_formas_pago_desc unique (descripcion),
+  7    constraint ck_formas_pago_dias check (dias_plazo between 0 and 180)
+  8  );
+
+Table FORMAS_PAGO created.
+
+SQL> 
+SQL> -- ---------------------------------------------------------------------
+SQL> -- 4. ARTICULOS
+SQL> -- ---------------------------------------------------------------------
+SQL> create table articulos (
+  2    id_articulo      number(6)      not null,
+  3    codigo_articulo  varchar2(20)   not null,
+  4    nombre_articulo  varchar2(100)  not null,
+  5    categoria        varchar2(40)   not null,
+  6    precio_unitario  number(12,2)   not null,
+  7    estado           char(1)        default 'A' not null,
+  8    constraint pk_articulos primary key (id_articulo),
+  9    constraint uq_articulos_codigo unique (codigo_articulo),
+ 10    constraint ck_articulos_precio check (precio_unitario > 0),
+ 11    constraint ck_articulos_estado check (estado in ('A', 'I'))
+ 12  );
+
+Table ARTICULOS created.
+
+SQL> 
+SQL> -- ---------------------------------------------------------------------
+SQL> -- 5. FACTURAS (encabezado)
+SQL> -- ---------------------------------------------------------------------
+SQL> create table facturas (
+  2    numero_factura     number(10)     not null,
+  3    fecha_factura      date           not null,
+  4    fecha_vencimiento  date           not null,
+  5    id_cliente         number(6)      not null,
+  6    id_sucursal        number(4)      not null,
+  7    id_forma_pago      number(2)      not null,
+  8    valor_total        number(14,2)   default 0 not null,
+  9    valor_pagado       number(14,2)   default 0 not null,
+ 10    constraint pk_facturas primary key (numero_factura),
+ 11    constraint fk_facturas_clientes foreign key (id_cliente)
+ 12      references clientes (id_cliente),
+ 13    constraint fk_facturas_sucursales foreign key (id_sucursal)
+ 14      references sucursales (id_sucursal),
+ 15    constraint fk_facturas_formas_pago foreign key (id_forma_pago)
+ 16      references formas_pago (id_forma_pago),
+ 17    constraint ck_facturas_fechas check (fecha_vencimiento >= fecha_factura),
+ 18    constraint ck_facturas_total check (valor_total >= 0),
+ 19    constraint ck_facturas_pagado check (valor_pagado >= 0 and valor_pagado <= valor_total)
+ 20  );
+
+Table FACTURAS created.
+
+SQL> 
+SQL> -- ---------------------------------------------------------------------
+SQL> -- 6. DETALLE_FACTURA (lineas de cada factura)
+SQL> -- ---------------------------------------------------------------------
+SQL> create table detalle_factura (
+  2    numero_factura  number(10)    not null,
+  3    numero_linea    number(3)     not null,
+  4    id_articulo     number(6)     not null,
+  5    cantidad        number(6)     not null,
+  6    valor_unitario  number(12,2)  not null,
+  7    subtotal        number(14,2)  generated always as (cantidad * valor_unitario) virtual,
+  8    constraint pk_detalle_factura primary key (numero_factura, numero_linea),
+  9    constraint fk_detalle_facturas foreign key (numero_factura)
+ 10      references facturas (numero_factura) on delete cascade,
+ 11    constraint fk_detalle_articulos foreign key (id_articulo)
+ 12      references articulos (id_articulo),
+ 13    constraint uq_detalle_articulo unique (numero_factura, id_articulo),
+ 14    constraint ck_detalle_cantidad check (cantidad > 0),
+ 15    constraint ck_detalle_valor check (valor_unitario >= 0)
+ 16  );
+
+Table DETALLE_FACTURA created.
+
+SQL> 
+SQL> -- ---------------------------------------------------------------------
+SQL> -- Indices sobre las claves foraneas (mejoran los JOIN y evitan bloqueos)
+SQL> -- ---------------------------------------------------------------------
+SQL> create index ix_facturas_cliente   on facturas (id_cliente);
+
+Index IX_FACTURAS_CLIENTE created.
+
+SQL> create index ix_facturas_sucursal  on facturas (id_sucursal);
+
+Index IX_FACTURAS_SUCURSAL created.
+
+SQL> create index ix_facturas_forma     on facturas (id_forma_pago);
+
+Index IX_FACTURAS_FORMA created.
+
+SQL> create index ix_facturas_fecha     on facturas (fecha_factura);
+
+Index IX_FACTURAS_FECHA created.
+
+SQL> create index ix_detalle_articulo   on detalle_factura (id_articulo);
+
+Index IX_DETALLE_ARTICULO created.
+
+SQL> 
+SQL> -- ---------------------------------------------------------------------
+SQL> -- Comentarios (documentan el diccionario de datos dentro de Oracle)
+SQL> -- ---------------------------------------------------------------------
+SQL> comment on table clientes is 'Clientes a quienes TECH TRANSITION emite facturas';
+
+Comment created.
+
+SQL> comment on column clientes.id_cliente is 'Identificador interno del cliente';
+
+Comment created.
+
+SQL> comment on column clientes.tipo_documento is 'Tipo de documento: CC, CE o NIT';
+
+Comment created.
+
+SQL> comment on column clientes.numero_documento is 'Numero del documento de identificacion';
+
+Comment created.
+
+SQL> comment on column clientes.nombre_cliente is 'Nombre o razon social del cliente';
+
+Comment created.
+
+SQL> comment on column clientes.telefono is 'Telefono de contacto';
+
+Comment created.
+
+SQL> comment on column clientes.correo is 'Correo electronico para envio de facturas';
+
+Comment created.
+
+SQL> comment on column clientes.direccion is 'Direccion del cliente';
+
+Comment created.
+
+SQL> comment on column clientes.ciudad is 'Ciudad del cliente';
+
+Comment created.
+
+SQL> comment on column clientes.fecha_registro is 'Fecha de registro del cliente';
+
+Comment created.
+
+SQL> 
+SQL> comment on table sucursales is 'Sucursales de TECH TRANSITION que emiten facturas';
+
+Comment created.
+
+SQL> comment on column sucursales.id_sucursal is 'Identificador de la sucursal';
+
+Comment created.
+
+SQL> comment on column sucursales.nombre_sucursal is 'Nombre de la sucursal';
+
+Comment created.
+
+SQL> comment on column sucursales.ciudad is 'Ciudad donde opera la sucursal';
+
+Comment created.
+
+SQL> comment on column sucursales.direccion is 'Direccion de la sucursal';
+
+Comment created.
+
+SQL> comment on column sucursales.telefono is 'Telefono de la sucursal';
+
+Comment created.
+
+SQL> 
+SQL> comment on table formas_pago is 'Catalogo de formas de pago aceptadas';
+
+Comment created.
+
+SQL> comment on column formas_pago.id_forma_pago is 'Identificador de la forma de pago';
+
+Comment created.
+
+SQL> comment on column formas_pago.descripcion is 'Nombre de la forma de pago';
+
+Comment created.
+
+SQL> comment on column formas_pago.dias_plazo is 'Dias de plazo para el pago (0 = contado)';
+
+Comment created.
+
+SQL> 
+SQL> comment on table articulos is 'Catalogo de articulos que se facturan';
+
+Comment created.
+
+SQL> comment on column articulos.id_articulo is 'Identificador interno del articulo';
+
+Comment created.
+
+SQL> comment on column articulos.codigo_articulo is 'Codigo comercial (SKU) del articulo';
+
+Comment created.
+
+SQL> comment on column articulos.nombre_articulo is 'Descripcion del articulo';
+
+Comment created.
+
+SQL> comment on column articulos.categoria is 'Categoria del articulo';
+
+Comment created.
+
+SQL> comment on column articulos.precio_unitario is 'Precio de lista vigente en pesos colombianos';
+
+Comment created.
+
+SQL> comment on column articulos.estado is 'A = activo, I = inactivo';
+
+Comment created.
+
+SQL> 
+SQL> comment on table facturas is 'Encabezado de las facturas de venta';
+
+Comment created.
+
+SQL> comment on column facturas.numero_factura is 'Numero consecutivo de la factura';
+
+Comment created.
+
+SQL> comment on column facturas.fecha_factura is 'Fecha de expedicion de la factura';
+
+Comment created.
+
+SQL> comment on column facturas.fecha_vencimiento is 'Fecha limite de pago';
+
+Comment created.
+
+SQL> comment on column facturas.id_cliente is 'Cliente facturado (FK a CLIENTES)';
+
+Comment created.
+
+SQL> comment on column facturas.id_sucursal is 'Sucursal que factura (FK a SUCURSALES)';
+
+Comment created.
+
+SQL> comment on column facturas.id_forma_pago is 'Forma de pago (FK a FORMAS_PAGO)';
+
+Comment created.
+
+SQL> comment on column facturas.valor_total is 'Valor total de la factura (suma de subtotales)';
+
+Comment created.
+
+SQL> comment on column facturas.valor_pagado is 'Valor abonado por el cliente';
+
+Comment created.
+
+SQL> 
+SQL> comment on table detalle_factura is 'Lineas de articulos de cada factura';
+
+Comment created.
+
+SQL> comment on column detalle_factura.numero_factura is 'Factura a la que pertenece la linea (FK a FACTURAS)';
+
+Comment created.
+
+SQL> comment on column detalle_factura.numero_linea is 'Numero de linea dentro de la factura';
+
+Comment created.
+
+SQL> comment on column detalle_factura.id_articulo is 'Articulo vendido (FK a ARTICULOS)';
+
+Comment created.
+
+SQL> comment on column detalle_factura.cantidad is 'Cantidad de unidades vendidas';
+
+Comment created.
+
+SQL> comment on column detalle_factura.valor_unitario is 'Valor unitario aplicado en la venta';
+
+Comment created.
+
+SQL> comment on column detalle_factura.subtotal is 'Columna virtual: cantidad * valor_unitario';
+
+Comment created.
+
+SQL> 
+SQL> -- Comprobacion rapida de las tablas creadas
+SQL> column table_name format a20
+SQL> select table_name, num_rows from user_tables order by table_name;
+
+TABLE_NAME            NUM_ROWS 
+__________________ ___________ 
+ARTICULOS                      
+CLIENTES                       
+DETALLE_FACTURA                
+FACTURAS                       
+FORMAS_PAGO                    
+SUCURSALES                     
+
+6 rows selected. 
+
+SQL> exit
+Disconnected from Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0
+[codigo de salida: 0]
+

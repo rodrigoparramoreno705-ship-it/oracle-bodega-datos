@@ -1,0 +1,34 @@
+### 2026-10-04 12:31:17 UTC
+root@cloud-vm:~# docker exec -i oracle-free sqlplus -s / as sysdba <<'SQL'
+set linesize 150 pagesize 50
+column banner_full format a90
+select banner_full from v\$version;
+column instance_name format a12
+column host_name format a15
+select instance_name, host_name, version_full, status, database_status from v\$instance;
+column name format a12
+select name, open_mode, log_mode, cdb from v\$database;
+SQL
+select banner_full from v\$version
+                         *
+ERROR at line 1:
+ORA-00911: \: invalid character after <identifier>
+Help: https://docs.oracle.com/error-help/db/ora-00911/
+
+
+select instance_name, host_name, version_full, status, database_status from v\$instance
+                                                                             *
+ERROR at line 1:
+ORA-00911: \: invalid character after <identifier>
+Help: https://docs.oracle.com/error-help/db/ora-00911/
+
+
+select name, open_mode, log_mode, cdb from v\$database
+                                            *
+ERROR at line 1:
+ORA-00911: \: invalid character after <identifier>
+Help: https://docs.oracle.com/error-help/db/ora-00911/
+
+
+[codigo de salida: 0]
+

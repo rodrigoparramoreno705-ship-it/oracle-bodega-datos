@@ -1,0 +1,7 @@
+"ID_FORMA_PAGO","DESCRIPCION","DIAS_PLAZO"
+1,"Efectivo",0
+2,"Tarjeta débito",0
+3,"Tarjeta crédito",0
+4,"Transferencia bancaria",0
+5,"Crédito 30 días",30
+6,"Crédito 60 días",60

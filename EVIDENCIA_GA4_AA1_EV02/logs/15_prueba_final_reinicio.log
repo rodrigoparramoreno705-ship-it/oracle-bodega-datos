@@ -1,0 +1,61 @@
+### 2026-10-04 12:45:30 UTC
+root@cloud-vm:~# docker stop oracle-free && docker ps -a --filter name=oracle-free --format 'table {{.Names}}\t{{.Status}}'
+oracle-free
+NAMES         STATUS
+oracle-free   Exited (143) Less than a second ago
+[codigo de salida: 0]
+
+### 2026-10-04 12:45:32 UTC
+root@cloud-vm:~# docker start oracle-free && for i in $(seq 1 60); do docker logs --since 1m oracle-free 2>&1 | grep -q 'DATABASE IS READY TO USE' && break; sleep 3; done; docker logs --since 2m oracle-free 2>&1 | grep -E 'DATABASE IS READY|Database opened|STARTING'; docker ps --filter name=oracle-free --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+oracle-free
+Database opened.
+DATABASE IS READY TO USE!
+NAMES         STATUS         PORTS
+oracle-free   Up 6 seconds   0.0.0.0:1521->1521/tcp
+[codigo de salida: 0]
+
+### 2026-10-04 12:45:39 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql tech_transition/TechT2026@//localhost:1521/FREEPDB1 @informe/recursos/sql_verificacion_instalacion/prueba_final.sql 2>&1 | grep -v '^Picked up JAVA_TOOL_OPTIONS'
+
+SQLcl: Release 26.3 Production on Sun Oct 04 12:45:40 2026
+
+Copyright (c) 1982, 2026, Oracle.  All rights reserved.
+
+Connected to:
+Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0
+
+SQL> select sys_context('USERENV','CON_NAME') as contenedor, user as usuario,
+  2         to_char(sysdate,'YYYY-MM-DD HH24:MI:SS') as fecha from dual;
+
+CONTENEDOR    USUARIO            FECHA                  
+_____________ __________________ ______________________ 
+FREEPDB1      TECH_TRANSITION    2026-10-04 12:45:43    
+
+1 row selected. 
+
+SQL> select (select count(*) from clientes) clientes, (select count(*) from sucursales) sucursales,
+  2         (select count(*) from formas_pago) formas_pago, (select count(*) from articulos) articulos,
+  3         (select count(*) from facturas) facturas, (select count(*) from detalle_factura) detalles
+  4    from dual;
+
+   CLIENTES    SUCURSALES    FORMAS_PAGO    ARTICULOS    FACTURAS    DETALLES 
+___________ _____________ ______________ ____________ ___________ ___________ 
+         10             3              6           15          20          52 
+
+1 row selected. 
+
+SQL> select sum(valor_total) total_facturado, sum(valor_pagado) total_pagado,
+  2         sum(valor_total - valor_pagado) saldo_pendiente from facturas;
+
+   TOTAL_FACTURADO    TOTAL_PAGADO    SALDO_PENDIENTE 
+__________________ _______________ __________________ 
+         172415000       133580000           38835000 
+
+1 row selected. 
+
+SQL> exit
+Disconnected from Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0
+[codigo de salida: 0]
+

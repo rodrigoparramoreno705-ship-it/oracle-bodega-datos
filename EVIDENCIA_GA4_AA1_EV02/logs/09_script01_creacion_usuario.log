@@ -1,0 +1,107 @@
+### 2026-10-04 12:39:24 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql system/Sena2026Oracle@//localhost:1521/FREEPDB1 @sql/01_creacion_usuario.sql 2>&1 | grep -v '^Picked up JAVA_TOOL_OPTIONS'
+
+SQLcl: Release 26.3 Production on Sun Oct 04 12:39:25 2026
+
+Copyright (c) 1982, 2026, Oracle.  All rights reserved.
+
+Last Successful login time: Sun Oct 04 2026 12:39:27 +00:00
+
+Connected to:
+Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0
+
+SQL> set feedback on
+SQL> set linesize 150
+SQL> set pagesize 50
+SQL> 
+SQL> show user
+USER is "SYSTEM"
+SQL> show con_name
+CON_NAME 
+------------------------------
+FREEPDB1
+SQL> 
+SQL> -- Se elimina el esquema si ya existia (permite re-ejecutar la practica)
+SQL> drop user if exists tech_transition cascade;
+
+User TECH_TRANSITION dropped.
+
+SQL> 
+SQL> -- Creacion del usuario propietario del esquema de facturacion
+SQL> create user tech_transition identified by ******
+  2    default tablespace users
+  3    temporary tablespace temp
+  4    quota 200m on users;
+
+User TECH_TRANSITION created.
+
+SQL> 
+SQL> -- Privilegios minimos necesarios para el desarrollo del caso
+SQL> grant create session  to tech_transition;
+
+Grant succeeded.
+
+SQL> grant create table    to tech_transition;
+
+Grant succeeded.
+
+SQL> grant create view     to tech_transition;
+
+Grant succeeded.
+
+SQL> grant create sequence to tech_transition;
+
+Grant succeeded.
+
+SQL> grant create trigger  to tech_transition;
+
+Grant succeeded.
+
+SQL> 
+SQL> -- Verificacion del usuario creado
+SQL> column username format a16
+SQL> column account_status format a14
+SQL> column default_tablespace format a12
+SQL> select username, account_status, default_tablespace, created
+  2    from dba_users
+  3   where username = 'TECH_TRANSITION';
+
+USERNAME           ACCOUNT_STATUS    DEFAULT_TABLESPACE    CREATED      
+__________________ _________________ _____________________ ____________ 
+TECH_TRANSITION    OPEN              USERS                 04-OCT-26    
+
+1 row selected. 
+
+SQL> 
+SQL> column privilege format a20
+SQL> select grantee, privilege
+  2    from dba_sys_privs
+  3   where grantee = 'TECH_TRANSITION'
+  4   order by privilege;
+
+GRANTEE            PRIVILEGE          
+__________________ __________________ 
+TECH_TRANSITION    CREATE SEQUENCE    
+TECH_TRANSITION    CREATE SESSION     
+TECH_TRANSITION    CREATE TABLE       
+TECH_TRANSITION    CREATE TRIGGER     
+TECH_TRANSITION    CREATE VIEW        
+
+5 rows selected. 
+
+SQL> 
+SQL> column tablespace_name format a12
+SQL> select tablespace_name, max_bytes/1024/1024 as cuota_mb
+  2    from dba_ts_quotas
+  3   where username = 'TECH_TRANSITION';
+
+TABLESPACE_NAME       CUOTA_MB 
+__________________ ___________ 
+USERS                      200 
+
+1 row selected. 
+
+SQL> exit
+Disconnected from Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0

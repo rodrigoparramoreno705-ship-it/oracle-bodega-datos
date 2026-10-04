@@ -1,0 +1,325 @@
+### 2026-10-04 12:43:45 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql tech_transition/TechT2026@//localhost:1521/FREEPDB1 @sql/04_consultas.sql 2>&1 | grep -v '^Picked up JAVA_TOOL_OPTIONS'
+
+SQLcl: Release 26.3 Production on Sun Oct 04 12:43:47 2026
+
+Copyright (c) 1982, 2026, Oracle.  All rights reserved.
+
+Connected to:
+Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0
+
+SQL> set feedback on
+SQL> set linesize 200
+SQL> set pagesize 100
+SQL> alter session set nls_date_format = 'YYYY-MM-DD';
+
+Session altered.
+
+SQL> column nombre_cliente format a42
+SQL> column nombre_sucursal format a24
+SQL> column forma_pago format a24
+SQL> column nombre_articulo format a46
+SQL> column ciudad format a10
+SQL> column correo format a38
+SQL> column tipo_documento heading TIPO format a4
+SQL> column numero_documento heading DOCUMENTO format a11
+SQL> column valor_total format 999,999,990
+SQL> column valor_pagado format 999,999,990
+SQL> column saldo format 999,999,990
+SQL> column total_facturado format 9,999,999,990
+SQL> column total_pagado format 9,999,999,990
+SQL> column saldo_pendiente format 9,999,999,990
+SQL> column valor_unitario format 99,999,990
+SQL> column subtotal format 999,999,990
+SQL> column ventas format 9,999,999,990
+SQL> 
+SQL> -- 1. Todos los clientes
+SQL> select id_cliente, tipo_documento, numero_documento, nombre_cliente, ciudad, correo
+  2    from clientes
+  3   order by id_cliente;
+
+   ID_CLIENTE TIPO_DOCUMENTO    NUMERO_DOCUMENTO    NOMBRE_CLIENTE                               CIUDAD      CORREO                                   
+_____________ _________________ ___________________ ____________________________________________ ___________ ________________________________________ 
+            1 NIT               900000001           Comercializadora Andina Delta S.A.S.         Bogotá      compras@andinadelta.example.com          
+            2 CC                1000000002          Laura Marcela Ríos Peña                      Bogotá      laura.rios@correo.example.com            
+            3 NIT               900000003           Soluciones Educativas Horizonte S.A.S.       Medellín    facturacion@horizonte.example.com        
+            4 CC                1000000004          Andrés Felipe Cárdenas Mora                  Medellín    andres.cardenas@correo.example.com       
+            5 NIT               900000005           Clínica Veterinaria Patitas Felices Ltda.    Cali        admin@patitasfelices.example.com         
+            6 CE                500000006           Sofía Valentina Marín Torres                 Cali        sofia.marin@correo.example.com           
+            7 NIT               900000007           Constructora Sendero Verde S.A.S.            Bogotá      tesoreria@senderoverde.example.com       
+            8 CC                1000000008          Juan Esteban Ospina Ruiz                     Medellín    juan.ospina@correo.example.com           
+            9 NIT               900000009           Distribuidora Café del Valle S.A.S.          Cali        pagos@cafedelvalle.example.com           
+           10 CC                1000000010          María José Quintero Lozano                   Bogotá      mariajose.quintero@correo.example.com    
+
+10 rows selected. 
+
+SQL> 
+SQL> -- 2. Todas las facturas
+SQL> select numero_factura, fecha_factura, fecha_vencimiento, id_cliente, id_sucursal,
+  2         id_forma_pago, valor_total, valor_pagado
+  3    from facturas
+  4   order by numero_factura;
+
+   NUMERO_FACTURA FECHA_FACTURA    FECHA_VENCIMIENTO       ID_CLIENTE    ID_SUCURSAL    ID_FORMA_PAGO    VALOR_TOTAL    VALOR_PAGADO 
+_________________ ________________ ____________________ _____________ ______________ ________________ ______________ _______________ 
+             1001 2026-07-02       2026-08-01                       1              1                5       19725000        19725000 
+             1002 2026-07-04       2026-07-04                       2              1                3        4595000         4595000 
+             1003 2026-07-08       2026-09-06                       3              2                6       34760000        34760000 
+             1004 2026-07-11       2026-07-11                       4              2                1         235000          235000 
+             1005 2026-07-15       2026-07-15                       5              3                4        1980000         1980000 
+             1006 2026-07-19       2026-07-19                       6              3                2         670000          670000 
+             1007 2026-07-23       2026-08-22                       7              1                5        5280000         5280000 
+             1008 2026-07-28       2026-07-28                       8              2                3        2675000         2675000 
+             1009 2026-08-03       2026-09-02                       9              3                5       11370000         5685000 
+             1010 2026-08-06       2026-08-06                      10              1                2         830000          830000 
+             1011 2026-08-10       2026-10-09                       1              1                6       25640000        12820000 
+             1012 2026-08-14       2026-08-14                       3              2                4        3000000         3000000 
+             1013 2026-08-19       2026-08-19                       5              3                1         490000          490000 
+             1014 2026-08-24       2026-09-23                       7              1                5       25350000        25350000 
+             1015 2026-08-29       2026-08-29                       2              1                3         810000          810000 
+             1016 2026-09-03       2026-11-02                       9              3                6        2210000               0 
+             1017 2026-09-08       2026-09-08                       4              2                2         250000          250000 
+             1018 2026-09-14       2026-10-14                       3              2                5       26800000        13400000 
+             1019 2026-09-21       2026-09-21                       6              3                4        1025000         1025000 
+             1020 2026-09-28       2026-10-28                       1              1                5        4720000               0 
+
+20 rows selected. 
+
+SQL> 
+SQL> -- 3. Facturas con su cliente (JOIN)
+SQL> select f.numero_factura, f.fecha_factura, c.nombre_cliente, f.valor_total
+  2    from facturas f
+  3    join clientes c on c.id_cliente = f.id_cliente
+  4   order by f.numero_factura;
+
+   NUMERO_FACTURA FECHA_FACTURA    NOMBRE_CLIENTE                                  VALOR_TOTAL 
+_________________ ________________ ____________________________________________ ______________ 
+             1001 2026-07-02       Comercializadora Andina Delta S.A.S.               19725000 
+             1002 2026-07-04       Laura Marcela Ríos Peña                             4595000 
+             1003 2026-07-08       Soluciones Educativas Horizonte S.A.S.             34760000 
+             1004 2026-07-11       Andrés Felipe Cárdenas Mora                          235000 
+             1005 2026-07-15       Clínica Veterinaria Patitas Felices Ltda.           1980000 
+             1006 2026-07-19       Sofía Valentina Marín Torres                         670000 
+             1007 2026-07-23       Constructora Sendero Verde S.A.S.                   5280000 
+             1008 2026-07-28       Juan Esteban Ospina Ruiz                            2675000 
+             1009 2026-08-03       Distribuidora Café del Valle S.A.S.                11370000 
+             1010 2026-08-06       María José Quintero Lozano                           830000 
+             1011 2026-08-10       Comercializadora Andina Delta S.A.S.               25640000 
+             1012 2026-08-14       Soluciones Educativas Horizonte S.A.S.              3000000 
+             1013 2026-08-19       Clínica Veterinaria Patitas Felices Ltda.            490000 
+             1014 2026-08-24       Constructora Sendero Verde S.A.S.                  25350000 
+             1015 2026-08-29       Laura Marcela Ríos Peña                              810000 
+             1016 2026-09-03       Distribuidora Café del Valle S.A.S.                 2210000 
+             1017 2026-09-08       Andrés Felipe Cárdenas Mora                          250000 
+             1018 2026-09-14       Soluciones Educativas Horizonte S.A.S.             26800000 
+             1019 2026-09-21       Sofía Valentina Marín Torres                        1025000 
+             1020 2026-09-28       Comercializadora Andina Delta S.A.S.                4720000 
+
+20 rows selected. 
+
+SQL> 
+SQL> -- 4. Facturas por sucursal (JOIN + GROUP BY + COUNT + SUM)
+SQL> select s.nombre_sucursal, s.ciudad,
+  2         count(*)           as cantidad_facturas,
+  3         sum(f.valor_total) as total_facturado
+  4    from facturas f
+  5    join sucursales s on s.id_sucursal = f.id_sucursal
+  6   group by s.nombre_sucursal, s.ciudad
+  7   order by total_facturado desc;
+
+NOMBRE_SUCURSAL           CIUDAD         CANTIDAD_FACTURAS    TOTAL_FACTURADO 
+_________________________ ___________ ____________________ __________________ 
+TT Bogotá Norte           Bogotá                         8           86950000 
+TT Medellín El Poblado    Medellín                       6           67720000 
+TT Cali Granada           Cali                           6           17745000 
+
+3 rows selected. 
+
+SQL> 
+SQL> -- 5. Facturas por forma de pago (LEFT JOIN para incluir formas sin uso)
+SQL> select fp.descripcion as forma_pago, fp.dias_plazo,
+  2         count(f.numero_factura)      as cantidad_facturas,
+  3         nvl(sum(f.valor_total), 0)   as total_facturado
+  4    from formas_pago fp
+  5    left join facturas f on f.id_forma_pago = fp.id_forma_pago
+  6   group by fp.descripcion, fp.dias_plazo
+  7   order by cantidad_facturas desc, forma_pago;
+
+FORMA_PAGO                   DIAS_PLAZO    CANTIDAD_FACTURAS    TOTAL_FACTURADO 
+_________________________ _____________ ____________________ __________________ 
+Crédito 30 días                      30                    6           93245000 
+Crédito 60 días                      60                    3           62610000 
+Tarjeta crédito                       0                    3            8080000 
+Tarjeta débito                        0                    3            1750000 
+Transferencia bancaria                0                    3            6005000 
+Efectivo                              0                    2             725000 
+
+6 rows selected. 
+
+SQL> 
+SQL> -- 6. Detalle de las facturas (JOIN de tres tablas)
+SQL> select d.numero_factura, d.numero_linea, a.codigo_articulo, a.nombre_articulo,
+  2         d.cantidad, d.valor_unitario, d.subtotal
+  3    from detalle_factura d
+  4    join articulos a on a.id_articulo = d.id_articulo
+  5   order by d.numero_factura, d.numero_linea;
+
+   NUMERO_FACTURA    NUMERO_LINEA CODIGO_ARTICULO    NOMBRE_ARTICULO                                      CANTIDAD    VALOR_UNITARIO    SUBTOTAL 
+_________________ _______________ __________________ _________________________________________________ ___________ _________________ ___________ 
+             1001               1 TT-LAP-001         Portátil 14 pulgadas Core i5 16 GB RAM                      5           3200000    16000000 
+             1001               2 TT-MON-001         Monitor 24 pulgadas Full HD                                 5            650000     3250000 
+             1001               3 TT-MOU-001         Mouse ergonómico inalámbrico                                5             95000      475000 
+             1002               1 TT-LAP-002         Portátil 15.6 pulgadas Ryzen 7 32 GB RAM                    1           4500000     4500000 
+             1002               2 TT-MOU-001         Mouse ergonómico inalámbrico                                1             95000       95000 
+             1003               1 TT-LAP-001         Portátil 14 pulgadas Core i5 16 GB RAM                     10           3200000    32000000 
+             1003               2 TT-AUD-001         Diadema con micrófono USB                                  10            180000     1800000 
+             1003               3 TT-SER-001         Servicio de instalación y configuración (hora)              8            120000      960000 
+             1004               1 TT-ALM-002         Memoria USB 64 GB                                           4             35000      140000 
+             1004               2 TT-MOU-001         Mouse ergonómico inalámbrico                                1             95000       95000 
+             1005               1 TT-IMP-001         Impresora multifuncional láser                              1           1350000     1350000 
+             1005               2 TT-TON-001         Tóner negro para impresora láser                            3            210000      630000 
+             1006               1 TT-ALM-001         Disco SSD externo 1 TB                                      1            390000      390000 
+             1006               2 TT-TEC-001         Teclado mecánico inalámbrico                                1            280000      280000 
+             1007               1 TT-RED-002         Switch 24 puertos gigabit                                   2            890000     1780000 
+             1007               2 TT-RED-001         Router Wi-Fi 6 doble banda                                  3            420000     1260000 
+             1007               3 TT-ENE-001         UPS 1500 VA                                                 2            760000     1520000 
+             1007               4 TT-SER-001         Servicio de instalación y configuración (hora)              6            120000      720000 
+             1008               1 TT-MON-002         Monitor 27 pulgadas 2K                                      2           1150000     2300000 
+             1008               2 TT-TEC-001         Teclado mecánico inalámbrico                                1            280000      280000 
+             1008               3 TT-MOU-001         Mouse ergonómico inalámbrico                                1             95000       95000 
+             1009               1 TT-LAP-001         Portátil 14 pulgadas Core i5 16 GB RAM                      3           3200000     9600000 
+             1009               2 TT-IMP-001         Impresora multifuncional láser                              1           1350000     1350000 
+             1009               3 TT-TON-001         Tóner negro para impresora láser                            2            210000      420000 
+             1010               1 TT-MON-001         Monitor 24 pulgadas Full HD                                 1            650000      650000 
+             1010               2 TT-AUD-001         Diadema con micrófono USB                                   1            180000      180000 
+             1011               1 TT-LAP-002         Portátil 15.6 pulgadas Ryzen 7 32 GB RAM                    4           4500000    18000000 
+             1011               2 TT-MON-002         Monitor 27 pulgadas 2K                                      4           1150000     4600000 
+             1011               3 TT-ENE-001         UPS 1500 VA                                                 4            760000     3040000 
+             1012               1 TT-ALM-002         Memoria USB 64 GB                                          30             35000     1050000 
+             1012               2 TT-ALM-001         Disco SSD externo 1 TB                                      5            390000     1950000 
+             1013               1 TT-TON-001         Tóner negro para impresora láser                            2            210000      420000 
+             1013               2 TT-ALM-002         Memoria USB 64 GB                                           2             35000       70000 
+             1014               1 TT-LAP-001         Portátil 14 pulgadas Core i5 16 GB RAM                      6           3200000    19200000 
+             1014               2 TT-MON-001         Monitor 24 pulgadas Full HD                                 6            650000     3900000 
+             1014               3 TT-TEC-001         Teclado mecánico inalámbrico                                6            280000     1680000 
+             1014               4 TT-MOU-001         Mouse ergonómico inalámbrico                                6             95000      570000 
+             1015               1 TT-ALM-001         Disco SSD externo 1 TB                                      1            390000      390000 
+             1015               2 TT-RED-001         Router Wi-Fi 6 doble banda                                  1            420000      420000 
+             1016               1 TT-RED-002         Switch 24 puertos gigabit                                   1            890000      890000 
+             1016               2 TT-RED-001         Router Wi-Fi 6 doble banda                                  2            420000      840000 
+             1016               3 TT-SER-001         Servicio de instalación y configuración (hora)              4            120000      480000 
+             1017               1 TT-AUD-001         Diadema con micrófono USB                                   1            180000      180000 
+             1017               2 TT-ALM-002         Memoria USB 64 GB                                           2             35000       70000 
+             1018               1 TT-LAP-001         Portátil 14 pulgadas Core i5 16 GB RAM                      8           3200000    25600000 
+             1018               2 TT-SER-001         Servicio de instalación y configuración (hora)             10            120000     1200000 
+             1019               1 TT-TEC-001         Teclado mecánico inalámbrico                                1            280000      280000 
+             1019               2 TT-MOU-001         Mouse ergonómico inalámbrico                                1             95000       95000 
+             1019               3 TT-MON-001         Monitor 24 pulgadas Full HD                                 1            650000      650000 
+             1020               1 TT-IMP-001         Impresora multifuncional láser                              2           1350000     2700000 
+             1020               2 TT-TON-001         Tóner negro para impresora láser                            6            210000     1260000 
+             1020               3 TT-ENE-001         UPS 1500 VA                                                 1            760000      760000 
+
+52 rows selected. 
+
+SQL> 
+SQL> -- 7. Total facturado (general y validacion contra el detalle)
+SQL> select count(*)          as facturas,
+  2         sum(valor_total)  as total_facturado,
+  3         (select sum(subtotal) from detalle_factura) as total_segun_detalle
+  4    from facturas;
+
+Error starting at line : 72 File @ /home/user/oracle-bodega-datos/EVIDENCIA_GA4_AA1_EV02/sql/04_consultas.sql
+In command -
+select count(*)          as facturas,
+       sum(valor_total)  as total_facturado,
+       (select sum(subtotal) from detalle_factura) as total_segun_detalle
+  from facturas
+Error at Command Line : 74 Column : 16 File @ /home/user/oracle-bodega-datos/EVIDENCIA_GA4_AA1_EV02/sql/04_consultas.sql
+Error report -
+SQL Error: ORA-00937: not a single-group group function
+Help: https://docs.oracle.com/error-help/db/ora-00937/
+SQL> 
+SQL> -- 8. Total pagado
+SQL> select sum(valor_pagado) as total_pagado,
+  2         round(100 * sum(valor_pagado) / sum(valor_total), 2) as porcentaje_recaudo
+  3    from facturas;
+
+   TOTAL_PAGADO    PORCENTAJE_RECAUDO 
+_______________ _____________________ 
+      133580000                 77.48 
+
+1 row selected. 
+
+SQL> 
+SQL> -- 9. Saldos pendientes por factura (solo las que tienen saldo)
+SQL> select f.numero_factura, c.nombre_cliente, f.fecha_vencimiento,
+  2         f.valor_total, f.valor_pagado,
+  3         f.valor_total - f.valor_pagado as saldo,
+  4         case when f.fecha_vencimiento < date '2026-10-04' then 'VENCIDA'
+  5              else 'AL DIA' end as estado_cartera
+  6    from facturas f
+  7    join clientes c on c.id_cliente = f.id_cliente
+  8   where f.valor_total - f.valor_pagado > 0
+  9   order by saldo desc;
+
+   NUMERO_FACTURA NOMBRE_CLIENTE                            FECHA_VENCIMIENTO       VALOR_TOTAL    VALOR_PAGADO       SALDO ESTADO_CARTERA    
+_________________ _________________________________________ ____________________ ______________ _______________ ___________ _________________ 
+             1018 Soluciones Educativas Horizonte S.A.S.    2026-10-14                 26800000        13400000    13400000 AL DIA            
+             1011 Comercializadora Andina Delta S.A.S.      2026-10-09                 25640000        12820000    12820000 AL DIA            
+             1009 Distribuidora Café del Valle S.A.S.       2026-09-02                 11370000         5685000     5685000 VENCIDA           
+             1020 Comercializadora Andina Delta S.A.S.      2026-10-28                  4720000               0     4720000 AL DIA            
+             1016 Distribuidora Café del Valle S.A.S.       2026-11-02                  2210000               0     2210000 AL DIA            
+
+5 rows selected. 
+
+SQL> 
+SQL> -- 9b. Saldo pendiente total por cliente
+SQL> select c.nombre_cliente,
+  2         sum(f.valor_total - f.valor_pagado) as saldo_pendiente
+  3    from facturas f
+  4    join clientes c on c.id_cliente = f.id_cliente
+  5   group by c.nombre_cliente
+  6  having sum(f.valor_total - f.valor_pagado) > 0
+  7   order by saldo_pendiente desc;
+
+NOMBRE_CLIENTE                               SALDO_PENDIENTE 
+_________________________________________ __________________ 
+Comercializadora Andina Delta S.A.S.                17540000 
+Soluciones Educativas Horizonte S.A.S.              13400000 
+Distribuidora Café del Valle S.A.S.                  7895000 
+
+3 rows selected. 
+
+SQL> 
+SQL> -- 10. Articulos mas vendidos (por unidades)
+SQL> select a.codigo_articulo, a.nombre_articulo,
+  2         sum(d.cantidad)  as unidades_vendidas,
+  3         count(distinct d.numero_factura) as facturas,
+  4         sum(d.subtotal)  as ventas
+  5    from detalle_factura d
+  6    join articulos a on a.id_articulo = d.id_articulo
+  7   group by a.codigo_articulo, a.nombre_articulo
+  8   order by unidades_vendidas desc, ventas desc
+  9   fetch first 10 rows only;
+
+CODIGO_ARTICULO    NOMBRE_ARTICULO                                      UNIDADES_VENDIDAS    FACTURAS       VENTAS 
+__________________ _________________________________________________ ____________________ ___________ ____________ 
+TT-ALM-002         Memoria USB 64 GB                                                   38           4      1330000 
+TT-LAP-001         Portátil 14 pulgadas Core i5 16 GB RAM                              32           5    102400000 
+TT-SER-001         Servicio de instalación y configuración (hora)                      28           4      3360000 
+TT-MOU-001         Mouse ergonómico inalámbrico                                        15           6      1425000 
+TT-MON-001         Monitor 24 pulgadas Full HD                                         13           4      8450000 
+TT-TON-001         Tóner negro para impresora láser                                    13           4      2730000 
+TT-AUD-001         Diadema con micrófono USB                                           12           3      2160000 
+TT-TEC-001         Teclado mecánico inalámbrico                                         9           4      2520000 
+TT-ENE-001         UPS 1500 VA                                                          7           3      5320000 
+TT-ALM-001         Disco SSD externo 1 TB                                               7           3      2730000 
+
+10 rows selected. 
+
+SQL> exit
+Disconnected from Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0
+[codigo de salida: 0]
+

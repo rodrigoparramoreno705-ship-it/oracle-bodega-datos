@@ -1,0 +1,48 @@
+### 2026-10-04 12:31:56 UTC
+root@cloud-vm:~# docker exec oracle-free sqlplus system/Sena2026Oracle@//localhost:1521/FREEPDB1 @/tmp/ev02/primera_conexion.sql
+
+SQL*Plus: Release 23.26.3.0.0 - Production on Sun Oct 4 12:31:57 2026
+Version 23.26.3.0.0
+
+Copyright (c) 1982, 2026, Oracle.  All rights reserved.
+
+Last Successful login time: Sun Oct 04 2026 12:31:46 +00:00
+
+Connected to:
+Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0
+
+SQL> show user
+USER is "SYSTEM"
+SQL> show con_name
+
+CON_NAME
+------------------------------
+FREEPDB1
+SQL> column servicio format a10
+SQL> column bd format a10
+SQL> select sys_context('USERENV','SERVICE_NAME') servicio, sys_context('USERENV','DB_NAME') bd, to_char(sysdate,'YYYY-MM-DD HH24:MI:SS') fecha_servidor from dual;
+
+SERVICIO   BD	      FECHA_SERVIDOR
+---------- ---------- -------------------
+freepdb1   FREEPDB1   2026-10-04 12:31:57
+
+SQL> select 'Conexion exitosa a Oracle' as mensaje from dual;
+
+MENSAJE
+-------------------------
+Conexion exitosa a Oracle
+
+SQL> exit
+Disconnected from Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0
+[codigo de salida: 0]
+
+### 2026-10-04 12:31:59 UTC
+root@cloud-vm:~# python3 informe/recursos/sql_verificacion_instalacion/conexion_cliente_red.py
+Cliente python-oracledb 26.0.1 (modo thin)
+DSN: localhost:1521/FREEPDB1
+Version del servidor: 23.26.3.0.0
+Contenedor / usuario / fecha: ('FREEPDB1', 'SYSTEM', '2026-10-04 12:32:00')
+[codigo de salida: 0]
+

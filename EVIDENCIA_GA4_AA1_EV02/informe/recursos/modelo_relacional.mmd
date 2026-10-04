@@ -1,0 +1,56 @@
+erDiagram
+    CLIENTES ||--o{ FACTURAS : "recibe"
+    SUCURSALES ||--o{ FACTURAS : "emite"
+    FORMAS_PAGO ||--o{ FACTURAS : "se paga con"
+    FACTURAS ||--|{ DETALLE_FACTURA : "contiene"
+    ARTICULOS ||--o{ DETALLE_FACTURA : "se vende en"
+
+    CLIENTES {
+        NUMBER id_cliente PK
+        VARCHAR2 tipo_documento "CC, CE, NIT"
+        VARCHAR2 numero_documento "UNIQUE con tipo"
+        VARCHAR2 nombre_cliente
+        VARCHAR2 telefono
+        VARCHAR2 correo
+        VARCHAR2 direccion
+        VARCHAR2 ciudad
+        DATE fecha_registro
+    }
+    SUCURSALES {
+        NUMBER id_sucursal PK
+        VARCHAR2 nombre_sucursal "UNIQUE"
+        VARCHAR2 ciudad
+        VARCHAR2 direccion
+        VARCHAR2 telefono
+    }
+    FORMAS_PAGO {
+        NUMBER id_forma_pago PK
+        VARCHAR2 descripcion "UNIQUE"
+        NUMBER dias_plazo
+    }
+    ARTICULOS {
+        NUMBER id_articulo PK
+        VARCHAR2 codigo_articulo "UNIQUE"
+        VARCHAR2 nombre_articulo
+        VARCHAR2 categoria
+        NUMBER precio_unitario
+        CHAR estado "A o I"
+    }
+    FACTURAS {
+        NUMBER numero_factura PK
+        DATE fecha_factura
+        DATE fecha_vencimiento
+        NUMBER id_cliente FK
+        NUMBER id_sucursal FK
+        NUMBER id_forma_pago FK
+        NUMBER valor_total
+        NUMBER valor_pagado
+    }
+    DETALLE_FACTURA {
+        NUMBER numero_factura PK,FK
+        NUMBER numero_linea PK
+        NUMBER id_articulo FK
+        NUMBER cantidad
+        NUMBER valor_unitario
+        NUMBER subtotal "virtual"
+    }

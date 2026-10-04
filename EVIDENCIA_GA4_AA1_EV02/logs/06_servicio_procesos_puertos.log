@@ -1,0 +1,71 @@
+### 2026-10-04 12:31:17 UTC
+root@cloud-vm:~# docker ps --filter name=oracle-free --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+NAMES         STATUS          PORTS
+oracle-free   Up 39 seconds   0.0.0.0:1521->1521/tcp
+[codigo de salida: 0]
+
+### 2026-10-04 12:31:17 UTC
+root@cloud-vm:~# docker exec oracle-free bash -c 'ps -eo pid,user,comm | grep -E "ora_(pmon|smon|dbw0|lgwr|ckpt|reco|mmon)|tnslsnr" | grep -v grep'
+bash: ps: command not found
+[codigo de salida: 1]
+
+### 2026-10-04 12:31:17 UTC
+root@cloud-vm:~# ss -ltnp | grep -E 'State|1521'
+bash: line 1: ss: command not found
+[codigo de salida: 1]
+
+### 2026-10-04 12:31:17 UTC
+root@cloud-vm:~# docker exec oracle-free lsnrctl status | grep -vE '^$'
+LSNRCTL for Linux: Version 23.26.3.0.0 - Production on 04-OCT-2026 12:31:17
+Copyright (c) 1991, 2026, Oracle.  All rights reserved.
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=IPC)(KEY=EXTPROC_FOR_FREE)))
+STATUS of the LISTENER
+------------------------
+Alias                     LISTENER
+Version                   TNSLSNR for Linux: Version 23.26.3.0.0 - Production
+Start Date                04-OCT-2026 12:31:01
+Uptime                    0 days 0 hr. 0 min. 17 sec
+Trace Level               off
+Security                  ON: Local OS Authentication
+SNMP                      OFF
+Default Service           FREE
+Listener Parameter File   /opt/oracle/product/26ai/dbhomeFree/network/admin/listener.ora
+Listener Log File         /opt/oracle/diag/tnslsnr/4261587fd73f/listener/alert/log.xml
+Listening Endpoints Summary...
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=ipc)(KEY=EXTPROC_FOR_FREE)))
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=4261587fd73f)(PORT=1521)))
+Services Summary...
+Service "5a4cd42ef8c011a1e0639a00010a3724" has 1 instance(s).
+  Instance "FREE", status READY, has 1 handler(s) for this service...
+Service "FREE" has 1 instance(s).
+  Instance "FREE", status READY, has 1 handler(s) for this service...
+Service "FREEXDB" has 1 instance(s).
+  Instance "FREE", status READY, has 0 handler(s) for this service...
+Service "freepdb1" has 1 instance(s).
+  Instance "FREE", status READY, has 1 handler(s) for this service...
+The command completed successfully
+[codigo de salida: 0]
+
+### 2026-10-04 12:31:17 UTC
+root@cloud-vm:~# (echo > /dev/tcp/127.0.0.1/1521) && echo 'Puerto 1521 accesible desde el host'
+Puerto 1521 accesible desde el host
+[codigo de salida: 0]
+
+### 2026-10-04 12:31:27 UTC
+root@cloud-vm:~# ps -eo pid,user,comm | grep -E 'ora_(pmon|smon|dbw0|lgwr|ckpt|reco|mmon)|tnslsnr' | grep -v grep
+ 1491 54321    tnslsnr
+ 1518 54321    ora_pmon_free
+ 1564 54321    ora_dbw0_free
+ 1566 54321    ora_lgwr_free
+ 1568 54321    ora_ckpt_free
+ 1570 54321    ora_smon_free
+ 1574 54321    ora_reco_free
+ 1582 54321    ora_mmon_free
+[codigo de salida: 0]
+
+### 2026-10-04 12:31:27 UTC
+root@cloud-vm:~# apt-get install -y -qq iproute2 >/dev/null 2>&1 || (apt-get update -qq >/dev/null 2>&1 && apt-get install -y -qq iproute2 >/dev/null 2>&1); ss -ltnp | grep -E 'State|1521'
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess                                
+LISTEN 0      4096         0.0.0.0:1521       0.0.0.0:*    users:(("docker-proxy",pid=1300,fd=9))
+[codigo de salida: 0]
+

@@ -1,0 +1,54 @@
+### 2026-10-04 12:39:10 UTC
+root@cloud-vm:~# /opt/oracle-tools/sqlcl/bin/sql -S system/Sena2026Oracle@//localhost:1521/FREEPDB1 @sql/01_creacion_usuario.sql 2>&1 | grep -v '^Picked up JAVA_TOOL_OPTIONS'
+USER is "SYSTEM"
+CON_NAME 
+------------------------------
+FREEPDB1
+
+User TECH_TRANSITION dropped.
+
+
+User TECH_TRANSITION created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+USERNAME           ACCOUNT_STATUS    DEFAULT_TABLESPACE    CREATED      
+__________________ _________________ _____________________ ____________ 
+TECH_TRANSITION    OPEN              USERS                 04-OCT-26    
+
+1 row selected. 
+
+
+GRANTEE            PRIVILEGE          
+__________________ __________________ 
+TECH_TRANSITION    CREATE SEQUENCE    
+TECH_TRANSITION    CREATE SESSION     
+TECH_TRANSITION    CREATE TABLE       
+TECH_TRANSITION    CREATE TRIGGER     
+TECH_TRANSITION    CREATE VIEW        
+
+5 rows selected. 
+
+
+TABLESPACE_NAME       CUOTA_MB 
+__________________ ___________ 
+USERS                      200 
+
+1 row selected. 
+
+[codigo de salida: 0]
+

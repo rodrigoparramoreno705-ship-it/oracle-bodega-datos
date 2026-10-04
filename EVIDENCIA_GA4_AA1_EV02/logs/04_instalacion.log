@@ -1,0 +1,16 @@
+### 2026-10-04 12:30:36 UTC
+root@cloud-vm:~# docker volume create oracle_free_data
+oracle_free_data
+[codigo de salida: 0]
+
+### 2026-10-04 12:30:36 UTC
+root@cloud-vm:~# docker run -d --name oracle-free -p 1521:1521 -e ORACLE_PASSWORD=Sena2026Oracle -v oracle_free_data:/opt/oracle/oradata gvenzl/oracle-free:23-slim
+4261587fd73f28bd9a316abb786ad087fbb5feb624f91bfcd9134784055bbde1
+[codigo de salida: 0]
+
+### 2026-10-04 12:30:38 UTC
+root@cloud-vm:~# docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
+NAMES         IMAGE                        STATUS                  PORTS
+oracle-free   gvenzl/oracle-free:23-slim   Up Less than a second   0.0.0.0:1521->1521/tcp
+[codigo de salida: 0]
+

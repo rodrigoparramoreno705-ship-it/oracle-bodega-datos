@@ -1,0 +1,119 @@
+### 2026-10-04 12:29:45 UTC
+root@cloud-vm:~# curl -sSIL --max-time 30 https://download.oracle.com/otn-pub/otn_software/db-free/oracle-database-free-23ai-1.0-1.el8.x86_64.rpm 2>&1 | grep -iE 'HTTP/|location|curl'
+curl: (56) CONNECT tunnel failed, response 403
+HTTP/1.1 200 Connection Established
+HTTP/1.1 302 Moved Temporarily
+Location: https://edelivery.oracle.com/otn-pub/otn_software/db-free/oracle-database-free-23ai-1.0-1.el8.x86_64.rpm
+HTTP/1.1 403 Forbidden
+[codigo de salida: 0]
+
+### 2026-10-04 12:29:46 UTC
+root@cloud-vm:~# curl -sSIL --max-time 30 https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm 2>&1 | grep -iE 'HTTP/|location|curl'
+curl: (56) CONNECT tunnel failed, response 403
+HTTP/1.1 200 Connection Established
+HTTP/1.1 302 Moved Temporarily
+Location: https://edelivery.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm
+HTTP/1.1 403 Forbidden
+[codigo de salida: 0]
+
+### 2026-10-04 12:29:46 UTC
+root@cloud-vm:~# curl -sS -o /dev/null -w 'HTTP %{http_code}\n' --max-time 20 https://container-registry.oracle.com/v2/
+curl: (56) CONNECT tunnel failed, response 403
+HTTP 000
+[codigo de salida: 56]
+
+### 2026-10-04 12:29:47 UTC
+root@cloud-vm:~# curl -sS --max-time 20 'https://yum.oracle.com/repo/OracleLinux/OL8/appstream/x86_64/' | grep -oE 'oracle-database-(free|xe|preinstall)[^"<]*rpm' | sort -u | tail -5
+oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm
+oracle-database-preinstall-19c-1.0-4.el8.x86_64.rpm
+oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm
+oracle-database-preinstall-23ai-1.0-2.el8.x86_64.rpm
+oracle-database-preinstall-23ai-1.0-4.el8.x86_64.rpm
+[codigo de salida: 0]
+
+### 2026-10-04 12:29:52 UTC
+root@cloud-vm:~# time docker pull gvenzl/oracle-free:23-slim 2>&1 | grep -vE 'Downloading|Extracting|Waiting|Verifying' 
+23-slim: Pulling from gvenzl/oracle-free
+8752dc7faca6: Pulling fs layer
+0478c6754a70: Pulling fs layer
+b0bfbf99b20a: Pulling fs layer
+4a89c51c0a93: Pulling fs layer
+a59acea35b2b: Pulling fs layer
+7de834c3d18e: Pulling fs layer
+4a89c51c0a93: Download complete
+b0bfbf99b20a: Download complete
+7de834c3d18e: Download complete
+8752dc7faca6: Download complete
+a59acea35b2b: Download complete
+4a89c51c0a93: Pull complete
+0478c6754a70: Download complete
+7de834c3d18e: Pull complete
+8752dc7faca6: Pull complete
+a59acea35b2b: Pull complete
+b0bfbf99b20a: Pull complete
+0478c6754a70: Pull complete
+Digest: sha256:6d61d267a3b978c24c5ac1790e62e927416a0aec446bd86e4b3a1527562757bd
+Status: Downloaded newer image for gvenzl/oracle-free:23-slim
+docker.io/gvenzl/oracle-free:23-slim
+
+real	0m35.693s
+user	0m0.082s
+sys	0m0.034s
+[codigo de salida: 0]
+
+### 2026-10-04 12:30:36 UTC
+root@cloud-vm:~# docker images gvenzl/oracle-free
+IMAGE                        ID             DISK USAGE   CONTENT SIZE   EXTRA
+gvenzl/oracle-free:23-slim   6d61d267a3b9       2.84GB          848MB        
+[codigo de salida: 0]
+
+### 2026-10-04 12:30:36 UTC
+root@cloud-vm:~# docker image inspect gvenzl/oracle-free:23-slim --format 'Creado: {{.Created}} | SO: {{.Os}}/{{.Architecture}} | Tamano: {{.Size}} bytes'; docker image inspect gvenzl/oracle-free:23-slim --format '{{json .Config.Labels}}' | python3 -m json.tool; docker image inspect gvenzl/oracle-free:23-slim --format '{{range .Config.Env}}{{println .}}{{end}}' | grep -E 'ORACLE|VERSION'
+Creado: 2026-08-30T23:16:11.588561159Z | SO: linux/amd64 | Tamano: 848078779 bytes
+{
+    "io.buildah.version": "1.33.7",
+    "org.opencontainers.image.authors": "Gerald Venzl",
+    "org.opencontainers.image.description": "Oracle Database Free for everyone!",
+    "org.opencontainers.image.documentation": "https://github.com/gvenzl/oci-oracle-free/blob/main/README.md",
+    "org.opencontainers.image.licenses": "Apache-2.0",
+    "org.opencontainers.image.source": "https://github.com/gvenzl/oci-oracle-free",
+    "org.opencontainers.image.title": "Oracle Database Free Container images"
+}
+ORACLE_BASE=/opt/oracle
+ORACLE_BASE_CONFIG=/opt/oracle/product/26ai/dbhomeFree
+ORACLE_BASE_HOME=/opt/oracle/product/26ai/dbhomeFree
+ORACLE_HOME=/opt/oracle/product/26ai/dbhomeFree
+ORACLE_SID=FREE
+[codigo de salida: 0]
+
+### 2026-10-04 12:32:06 UTC
+root@cloud-vm:~# curl -sSIL --max-time 30 https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip 2>&1 | grep -iE 'HTTP/|location|content-length|curl'
+HTTP/1.1 200 Connection Established
+HTTP/1.1 200 OK
+Content-Length: 123946262
+[codigo de salida: 0]
+
+### 2026-10-04 12:32:07 UTC
+root@cloud-vm:~# curl -sSIL --max-time 30 https://download.oracle.com/otn_software/java/sqldeveloper/sqldeveloper-24.3.1.347.1826-no-jre.zip 2>&1 | grep -iE 'HTTP/|location|content-length|curl'
+HTTP/1.1 200 Connection Established
+HTTP/1.1 200 OK
+Content-Length: 587604133
+[codigo de salida: 0]
+
+### 2026-10-04 12:32:16 UTC
+root@cloud-vm:~# cd /opt/oracle-tools && curl -sS -o sqlcl-latest.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip && curl -sS -o sqldeveloper-24.3.1-no-jre.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqldeveloper-24.3.1.347.1826-no-jre.zip && ls -l *.zip && sha256sum *.zip
+-rw-r--r-- 1 root root 123946262 Oct  4 12:32 sqlcl-latest.zip
+-rw-r--r-- 1 root root 587604133 Oct  4 12:32 sqldeveloper-24.3.1-no-jre.zip
+eb0dca2becc30e9aa1c700ae71e5df6efde8a33d098d7d23405b6558bbb81a81  sqlcl-latest.zip
+3390ef58972f1f255077c49e66b171b8664773bb16e37570a7ca16acc5afb8cb  sqldeveloper-24.3.1-no-jre.zip
+[codigo de salida: 0]
+
+### 2026-10-04 12:32:29 UTC
+root@cloud-vm:~# cd /opt/oracle-tools && unzip -q -o sqlcl-latest.zip && unzip -q -o sqldeveloper-24.3.1-no-jre.zip && ls /opt/oracle-tools && /opt/oracle-tools/sqlcl/bin/sql -V 2>&1 | grep -v JAVA_TOOL
+sqlcl
+sqlcl-latest.zip
+sqldeveloper
+sqldeveloper-24.3.1-no-jre.zip
+SQLcl: Release 26.3.0.0 Production Build: 26.3.0.260.1620
+[codigo de salida: 0]
+

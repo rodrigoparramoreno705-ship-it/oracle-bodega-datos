@@ -1,0 +1,370 @@
+### 2026-10-04 12:43:51 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql system/Sena2026Oracle@//localhost:1521/FREEPDB1 @sql/05_verificacion.sql 2>&1 | grep -v '^Picked up JAVA_TOOL_OPTIONS'
+
+SQLcl: Release 26.3 Production on Sun Oct 04 12:43:52 2026
+
+Copyright (c) 1982, 2026, Oracle.  All rights reserved.
+
+Last Successful login time: Sun Oct 04 2026 12:43:54 +00:00
+
+Connected to:
+Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0
+
+SQL> set feedback on
+SQL> set linesize 200
+SQL> set pagesize 100
+SQL> column banner_full format a85
+SQL> column instance_name format a10
+SQL> column host_name format a14
+SQL> column table_name format a16
+SQL> column constraint_name format a26
+SQL> column tipo format a12
+SQL> column columnas format a32
+SQL> column tabla_referenciada format a16
+SQL> column search_condition_vc format a60
+SQL> column username format a16
+SQL> column machine format a14
+SQL> column program format a32
+SQL> column index_name format a22
+SQL> 
+SQL> -- V1. Version de Oracle
+SQL> select banner_full from v$version;
+
+BANNER_FULL                                                                            
+______________________________________________________________________________________ 
+Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free    
+Version 23.26.3.0.0                                                                    
+
+1 row selected. 
+
+SQL> 
+SQL> -- V2. Estado de la instancia y del servicio (base de datos conectable)
+SQL> select instance_name, version_full, status, database_status,
+  2         to_char(startup_time, 'YYYY-MM-DD HH24:MI:SS') as inicio
+  3    from v$instance;
+
+INSTANCE_NAME    VERSION_FULL    STATUS    DATABASE_STATUS    INICIO                 
+________________ _______________ _________ __________________ ______________________ 
+FREE             23.26.3.0.0     OPEN      ACTIVE             2026-10-04 12:31:01    
+
+1 row selected. 
+
+SQL> select name as pdb, open_mode from v$pdbs where name = 'FREEPDB1';
+
+PDB         OPEN_MODE     
+___________ _____________ 
+FREEPDB1    READ WRITE    
+
+1 row selected. 
+
+SQL> select name as servicio, network_name from v$active_services where con_id = 3;
+
+SERVICIO    NETWORK_NAME    
+___________ _______________ 
+freepdb1    freepdb1        
+
+1 row selected. 
+
+SQL> 
+SQL> -- V3. Conexiones (sesiones de usuario abiertas en este momento)
+SQL> select username, status, machine, program
+  2    from v$session
+  3   where username in ('SYSTEM', 'TECH_TRANSITION')
+  4   order by username;
+
+USERNAME           STATUS      MACHINE    PROGRAM          
+__________________ ___________ __________ ________________ 
+SYSTEM             INACTIVE    vm         SQL Developer    
+SYSTEM             ACTIVE      vm         SQLcl            
+TECH_TRANSITION    INACTIVE    vm         SQL Developer    
+
+3 rows selected. 
+
+SQL> 
+SQL> -- V4. Cantidad de tablas creadas en el esquema TECH_TRANSITION
+SQL> select count(*) as cantidad_tablas from dba_tables where owner = 'TECH_TRANSITION';
+
+   CANTIDAD_TABLAS 
+__________________ 
+                 6 
+
+1 row selected. 
+
+SQL> select table_name from dba_tables where owner = 'TECH_TRANSITION' order by table_name;
+
+TABLE_NAME         
+__________________ 
+ARTICULOS          
+CLIENTES           
+DETALLE_FACTURA    
+FACTURAS           
+FORMAS_PAGO        
+SUCURSALES         
+
+6 rows selected. 
+
+SQL> 
+SQL> -- V5. Cantidad de registros por tabla (conteo exacto)
+SQL> select 'CLIENTES' as tabla, count(*) as registros from tech_transition.clientes
+  2  union all select 'SUCURSALES',      count(*) from tech_transition.sucursales
+  3  union all select 'FORMAS_PAGO',     count(*) from tech_transition.formas_pago
+  4  union all select 'ARTICULOS',       count(*) from tech_transition.articulos
+  5  union all select 'FACTURAS',        count(*) from tech_transition.facturas
+  6  union all select 'DETALLE_FACTURA', count(*) from tech_transition.detalle_factura;
+
+TABLA                 REGISTROS 
+__________________ ____________ 
+CLIENTES                     10 
+SUCURSALES                    3 
+FORMAS_PAGO                   6 
+ARTICULOS                    15 
+FACTURAS                     20 
+DETALLE_FACTURA              52 
+
+6 rows selected. 
+
+SQL> 
+SQL> -- V6. Claves primarias
+SQL> select c.table_name, c.constraint_name,
+  2         listagg(cc.column_name, ', ') within group (order by cc.position) as columnas
+  3    from dba_constraints c
+  4    join dba_cons_columns cc on cc.owner = c.owner and cc.constraint_name = c.constraint_name
+  5   where c.owner = 'TECH_TRANSITION' and c.constraint_type = 'P'
+  6   group by c.table_name, c.constraint_name
+  7   order by c.table_name;
+
+TABLE_NAME         CONSTRAINT_NAME       COLUMNAS                        
+__________________ _____________________ _______________________________ 
+ARTICULOS          PK_ARTICULOS          ID_ARTICULO                     
+CLIENTES           PK_CLIENTES           ID_CLIENTE                      
+DETALLE_FACTURA    PK_DETALLE_FACTURA    NUMERO_FACTURA, NUMERO_LINEA    
+FACTURAS           PK_FACTURAS           NUMERO_FACTURA                  
+FORMAS_PAGO        PK_FORMAS_PAGO        ID_FORMA_PAGO                   
+SUCURSALES         PK_SUCURSALES         ID_SUCURSAL                     
+
+6 rows selected. 
+
+SQL> 
+SQL> -- V7. Claves foraneas y tabla referenciada
+SQL> select c.table_name, c.constraint_name,
+  2         listagg(cc.column_name, ', ') within group (order by cc.position) as columnas,
+  3         r.table_name as tabla_referenciada, c.delete_rule
+  4    from dba_constraints c
+  5    join dba_cons_columns cc on cc.owner = c.owner and cc.constraint_name = c.constraint_name
+  6    join dba_constraints r on r.owner = c.r_owner and r.constraint_name = c.r_constraint_name
+  7   where c.owner = 'TECH_TRANSITION' and c.constraint_type = 'R'
+  8   group by c.table_name, c.constraint_name, r.table_name, c.delete_rule
+  9   order by c.table_name, c.constraint_name;
+
+TABLE_NAME         CONSTRAINT_NAME            COLUMNAS          TABLA_REFERENCIADA    DELETE_RULE    
+__________________ __________________________ _________________ _____________________ ______________ 
+DETALLE_FACTURA    FK_DETALLE_ARTICULOS       ID_ARTICULO       ARTICULOS             NO ACTION      
+DETALLE_FACTURA    FK_DETALLE_FACTURAS        NUMERO_FACTURA    FACTURAS              CASCADE        
+FACTURAS           FK_FACTURAS_CLIENTES       ID_CLIENTE        CLIENTES              NO ACTION      
+FACTURAS           FK_FACTURAS_FORMAS_PAGO    ID_FORMA_PAGO     FORMAS_PAGO           NO ACTION      
+FACTURAS           FK_FACTURAS_SUCURSALES     ID_SUCURSAL       SUCURSALES            NO ACTION      
+
+5 rows selected. 
+
+SQL> 
+SQL> -- V8. Resumen de restricciones por tipo (P=PK, R=FK, U=UNIQUE, C=CHECK/NOT NULL)
+SQL> select table_name,
+  2         sum(case when constraint_type = 'P' then 1 else 0 end) as pk,
+  3         sum(case when constraint_type = 'R' then 1 else 0 end) as fk,
+  4         sum(case when constraint_type = 'U' then 1 else 0 end) as uniq,
+  5         sum(case when constraint_type = 'C' and search_condition_vc not like '%IS NOT NULL' then 1 else 0 end) as checks,
+  6         sum(case when constraint_type = 'C' and search_condition_vc like '%IS NOT NULL' then 1 else 0 end) as not_null,
+  7         count(*) as total
+  8    from dba_constraints
+  9   where owner = 'TECH_TRANSITION'
+ 10   group by rollup(table_name)
+ 11   order by table_name;
+
+TABLE_NAME            PK    FK    UNIQ    CHECKS    NOT_NULL    TOTAL 
+__________________ _____ _____ _______ _________ ___________ ________ 
+ARTICULOS              1     0       1         2           6       10 
+CLIENTES               1     0       1         2           6       10 
+DETALLE_FACTURA        1     2       1         2           5       11 
+FACTURAS               1     3       0         3           8       15 
+FORMAS_PAGO            1     0       1         1           3        6 
+SUCURSALES             1     0       1         0           4        6 
+                       6     5       5        10          32       58 
+
+7 rows selected. 
+
+SQL> 
+SQL> -- V9. Restricciones CHECK de negocio (sin las NOT NULL)
+SQL> select table_name, constraint_name, search_condition_vc, status
+  2    from dba_constraints
+  3   where owner = 'TECH_TRANSITION' and constraint_type = 'C'
+  4     and search_condition_vc not like '%IS NOT NULL'
+  5   order by table_name, constraint_name;
+
+TABLE_NAME         CONSTRAINT_NAME         SEARCH_CONDITION_VC                                  STATUS     
+__________________ _______________________ ____________________________________________________ __________ 
+ARTICULOS          CK_ARTICULOS_ESTADO     estado in ('A', 'I')                                 ENABLED    
+ARTICULOS          CK_ARTICULOS_PRECIO     precio_unitario > 0                                  ENABLED    
+CLIENTES           CK_CLIENTES_CORREO      correo is null or correo like '%_@_%._%'             ENABLED    
+CLIENTES           CK_CLIENTES_TIPO_DOC    tipo_documento in ('CC', 'CE', 'NIT')                ENABLED    
+DETALLE_FACTURA    CK_DETALLE_CANTIDAD     cantidad > 0                                         ENABLED    
+DETALLE_FACTURA    CK_DETALLE_VALOR        valor_unitario >= 0                                  ENABLED    
+FACTURAS           CK_FACTURAS_FECHAS      fecha_vencimiento >= fecha_factura                   ENABLED    
+FACTURAS           CK_FACTURAS_PAGADO      valor_pagado >= 0 and valor_pagado <= valor_total    ENABLED    
+FACTURAS           CK_FACTURAS_TOTAL       valor_total >= 0                                     ENABLED    
+FORMAS_PAGO        CK_FORMAS_PAGO_DIAS     dias_plazo between 0 and 180                         ENABLED    
+
+10 rows selected. 
+
+SQL> 
+SQL> -- V10. Indices del esquema
+SQL> select table_name, index_name, uniqueness
+  2    from dba_indexes
+  3   where owner = 'TECH_TRANSITION'
+  4   order by table_name, index_name;
+
+TABLE_NAME         INDEX_NAME               UNIQUENESS    
+__________________ ________________________ _____________ 
+ARTICULOS          PK_ARTICULOS             UNIQUE        
+ARTICULOS          UQ_ARTICULOS_CODIGO      UNIQUE        
+CLIENTES           PK_CLIENTES              UNIQUE        
+CLIENTES           UQ_CLIENTES_DOCUMENTO    UNIQUE        
+DETALLE_FACTURA    IX_DETALLE_ARTICULO      NONUNIQUE     
+DETALLE_FACTURA    PK_DETALLE_FACTURA       UNIQUE        
+DETALLE_FACTURA    UQ_DETALLE_ARTICULO      UNIQUE        
+FACTURAS           IX_FACTURAS_CLIENTE      NONUNIQUE     
+FACTURAS           IX_FACTURAS_FECHA        NONUNIQUE     
+FACTURAS           IX_FACTURAS_FORMA        NONUNIQUE     
+FACTURAS           IX_FACTURAS_SUCURSAL     NONUNIQUE     
+FACTURAS           PK_FACTURAS              UNIQUE        
+FORMAS_PAGO        PK_FORMAS_PAGO           UNIQUE        
+FORMAS_PAGO        UQ_FORMAS_PAGO_DESC      UNIQUE        
+SUCURSALES         PK_SUCURSALES            UNIQUE        
+SUCURSALES         UQ_SUCURSALES_NOMBRE     UNIQUE        
+
+16 rows selected. 
+
+SQL> 
+SQL> -- V11. Consistencia: valor_total de cada factura = suma de su detalle
+SQL> select count(*) as facturas_inconsistentes
+  2    from tech_transition.facturas f
+  3   where f.valor_total <> (select nvl(sum(d.subtotal), 0)
+  4                             from tech_transition.detalle_factura d
+  5                            where d.numero_factura = f.numero_factura);
+
+   FACTURAS_INCONSISTENTES 
+__________________________ 
+                         0 
+
+1 row selected. 
+
+SQL> 
+SQL> -- =====================================================================
+SQL> -- V12. Pruebas de integridad: cada sentencia DEBE ser rechazada por Oracle
+SQL> -- =====================================================================
+SQL> whenever sqlerror continue
+SQL> 
+SQL> -- a) Clave primaria duplicada (se espera ORA-00001)
+SQL> insert into tech_transition.clientes (id_cliente, tipo_documento, numero_documento, nombre_cliente, ciudad)
+  2  values (1, 'CC', '1999999999', 'Cliente de prueba duplicado', 'Bogota');
+
+Error starting at line : 111 File @ /home/user/oracle-bodega-datos/EVIDENCIA_GA4_AA1_EV02/sql/05_verificacion.sql
+In command -
+insert into tech_transition.clientes (id_cliente, tipo_documento, numero_documento, nombre_cliente, ciudad)
+values (1, 'CC', '1999999999', 'Cliente de prueba duplicado', 'Bogota')
+Error report -
+ORA-00001: unique constraint (TECH_TRANSITION.PK_CLIENTES) violated on table TECH_TRANSITION.CLIENTES columns (ID_CLIENTE)
+ORA-03301: (ORA-00001 details) row with column values (ID_CLIENTE:1) already exists
+Help: https://docs.oracle.com/error-help/db/ora-00001/
+SQL> 
+SQL> -- b) Factura con cliente inexistente (se espera ORA-02291)
+SQL> insert into tech_transition.facturas (numero_factura, fecha_factura, fecha_vencimiento, id_cliente, id_sucursal, id_forma_pago)
+  2  values (9999, date '2026-10-01', date '2026-10-01', 999, 1, 1);
+
+Error starting at line : 115 File @ /home/user/oracle-bodega-datos/EVIDENCIA_GA4_AA1_EV02/sql/05_verificacion.sql
+In command -
+insert into tech_transition.facturas (numero_factura, fecha_factura, fecha_vencimiento, id_cliente, id_sucursal, id_forma_pago)
+values (9999, date '2026-10-01', date '2026-10-01', 999, 1, 1)
+Error report -
+ORA-02291: integrity constraint (TECH_TRANSITION.FK_FACTURAS_CLIENTES) violated - parent key not found
+Help: https://docs.oracle.com/error-help/db/ora-02291/
+SQL> 
+SQL> -- c) Borrar un cliente que tiene facturas (se espera ORA-02292)
+SQL> delete from tech_transition.clientes where id_cliente = 1;
+
+Error starting at line : 119 File @ /home/user/oracle-bodega-datos/EVIDENCIA_GA4_AA1_EV02/sql/05_verificacion.sql
+In command -
+delete from tech_transition.clientes where id_cliente = 1
+Error report -
+ORA-02292: integrity constraint (TECH_TRANSITION.FK_FACTURAS_CLIENTES) violated - child record found
+Help: https://docs.oracle.com/error-help/db/ora-02292/
+SQL> 
+SQL> -- d) Cantidad negativa en el detalle (se espera ORA-02290)
+SQL> insert into tech_transition.detalle_factura (numero_factura, numero_linea, id_articulo, cantidad, valor_unitario)
+  2  values (1001, 99, 2, -3, 4500000);
+
+Error starting at line : 122 File @ /home/user/oracle-bodega-datos/EVIDENCIA_GA4_AA1_EV02/sql/05_verificacion.sql
+In command -
+insert into tech_transition.detalle_factura (numero_factura, numero_linea, id_articulo, cantidad, valor_unitario)
+values (1001, 99, 2, -3, 4500000)
+Error report -
+ORA-02290: check constraint (TECH_TRANSITION.CK_DETALLE_CANTIDAD) violated
+Help: https://docs.oracle.com/error-help/db/ora-02290/
+SQL> 
+SQL> -- e) Fecha de vencimiento anterior a la fecha de factura (se espera ORA-02290)
+SQL> insert into tech_transition.facturas (numero_factura, fecha_factura, fecha_vencimiento, id_cliente, id_sucursal, id_forma_pago)
+  2  values (9998, date '2026-10-01', date '2026-09-01', 1, 1, 1);
+
+Error starting at line : 126 File @ /home/user/oracle-bodega-datos/EVIDENCIA_GA4_AA1_EV02/sql/05_verificacion.sql
+In command -
+insert into tech_transition.facturas (numero_factura, fecha_factura, fecha_vencimiento, id_cliente, id_sucursal, id_forma_pago)
+values (9998, date '2026-10-01', date '2026-09-01', 1, 1, 1)
+Error report -
+ORA-02290: check constraint (TECH_TRANSITION.CK_FACTURAS_FECHAS) violated
+Help: https://docs.oracle.com/error-help/db/ora-02290/
+SQL> 
+SQL> -- f) Valor pagado mayor que el valor total (se espera ORA-02290)
+SQL> update tech_transition.facturas set valor_pagado = valor_total + 1 where numero_factura = 1001;
+
+Error starting at line : 130 File @ /home/user/oracle-bodega-datos/EVIDENCIA_GA4_AA1_EV02/sql/05_verificacion.sql
+In command -
+update tech_transition.facturas set valor_pagado = valor_total + 1 where numero_factura = 1001
+Error report -
+ORA-02290: check constraint (TECH_TRANSITION.CK_FACTURAS_PAGADO) violated
+Help: https://docs.oracle.com/error-help/db/ora-02290/
+SQL> 
+SQL> -- g) Campo obligatorio vacio (se espera ORA-01400)
+SQL> insert into tech_transition.articulos (id_articulo, codigo_articulo, nombre_articulo, categoria, precio_unitario)
+  2  values (99, 'TT-PRB-099', null, 'Pruebas', 1000);
+
+Error starting at line : 133 File @ /home/user/oracle-bodega-datos/EVIDENCIA_GA4_AA1_EV02/sql/05_verificacion.sql
+In command -
+insert into tech_transition.articulos (id_articulo, codigo_articulo, nombre_articulo, categoria, precio_unitario)
+values (99, 'TT-PRB-099', null, 'Pruebas', 1000)
+Error at Command Line : 134 Column : 27 File @ /home/user/oracle-bodega-datos/EVIDENCIA_GA4_AA1_EV02/sql/05_verificacion.sql
+Error report -
+SQL Error: ORA-01400: cannot insert NULL into ("TECH_TRANSITION"."ARTICULOS"."NOMBRE_ARTICULO")
+Help: https://docs.oracle.com/error-help/db/ora-01400/
+SQL> 
+SQL> rollback;
+
+Rollback complete.
+
+SQL> 
+SQL> -- Comprobacion final: los conteos no cambiaron despues de las pruebas
+SQL> select (select count(*) from tech_transition.clientes) as clientes,
+  2         (select count(*) from tech_transition.facturas) as facturas,
+  3         (select count(*) from tech_transition.detalle_factura) as detalles
+  4    from dual;
+
+   CLIENTES    FACTURAS    DETALLES 
+___________ ___________ ___________ 
+         10          20          52 
+
+1 row selected. 
+
+SQL> exit
+Disconnected from Oracle AI Database 26ai Free Release 23.26.3.0.0 - Develop, Learn, and Run for Free
+Version 23.26.3.0.0
+[codigo de salida: 0]
+
