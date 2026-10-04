@@ -1,0 +1,9 @@
+### 2026-10-04 17:30:45 UTC
+root@cloud-vm:~# docker start oracle-free && for i in $(seq 1 80); do docker logs --since 2m oracle-free 2>&1 | grep -q 'DATABASE IS READY TO USE' && break; sleep 3; done; docker logs --since 3m oracle-free 2>&1 | grep -E 'DATABASE IS READY|Database opened'; docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+oracle-free
+Database opened.
+DATABASE IS READY TO USE!
+NAMES         STATUS              PORTS
+oracle-free   Up About a minute   0.0.0.0:1521->1521/tcp
+[codigo de salida: 0]
+

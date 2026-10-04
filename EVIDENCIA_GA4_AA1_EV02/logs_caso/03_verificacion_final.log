@@ -1,0 +1,176 @@
+### 2026-10-04 17:48:45 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql -S tech_transition/TechT2026@//localhost:1521/FREEPDB1 @/tmp/claude-0/-home-user-oracle-bodega-datos/252c59e6-767b-5120-be5d-240c0ebbdb62/scratchpad/chk.sql 2>&1 | grep -v '^Picked'
+SQL Format Cleared
+
+TABLE_NAME
+--------------------------------------------------------------------------------
+ARTICULOS
+CLIENTES
+DETALLE_FACTURA
+FACTURAS
+FORMAS_PAGO
+SUCURSALES
+
+6 rows selected. 
+
+
+       CLI        SUC         FP        ART        FAC        DET
+---------- ---------- ---------- ---------- ---------- ----------
+        10          3          6         15         20         52
+
+
+NUMERO_FACTURA VALOR_TOTAL VALOR_PAGADO
+-------------- ----------- ------------
+          1009    11370000     11370000
+
+
+RESTRICCIONES
+-------------
+           58
+
+[codigo de salida: 0]
+
+### 2026-10-04 17:49:48 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql -S tech_transition/TechT2026@//localhost:1521/FREEPDB1 @/tmp/claude-0/-home-user-oracle-bodega-datos/252c59e6-767b-5120-be5d-240c0ebbdb62/scratchpad/idx.sql 2>&1 | grep -v '^Picked'
+SQL Format Cleared
+
+INDEX_NAME
+--------------------------------------------------------------------------------
+TABLE_NAME
+--------------------------------------------------------------------------------
+UNIQUENES
+---------
+PK_ARTICULOS                                                                    
+ARTICULOS                                                                       
+UNIQUE   
+
+UQ_ARTICULOS_CODIGO                                                             
+ARTICULOS                                                                       
+UNIQUE   
+
+INDEX_NAME
+--------------------------------------------------------------------------------
+TABLE_NAME
+--------------------------------------------------------------------------------
+UNIQUENES
+---------
+
+PK_CLIENTES                                                                     
+CLIENTES                                                                        
+UNIQUE   
+
+UQ_CLIENTES_DOCUMENTO                                                           
+CLIENTES                                                                        
+
+INDEX_NAME
+--------------------------------------------------------------------------------
+TABLE_NAME
+--------------------------------------------------------------------------------
+UNIQUENES
+---------
+UNIQUE   
+
+IX_DETALLE_ARTICULO                                                             
+DETALLE_FACTURA                                                                 
+NONUNIQUE
+
+PK_DETALLE_FACTURA                                                              
+
+INDEX_NAME
+--------------------------------------------------------------------------------
+TABLE_NAME
+--------------------------------------------------------------------------------
+UNIQUENES
+---------
+DETALLE_FACTURA                                                                 
+UNIQUE   
+
+UQ_DETALLE_ARTICULO                                                             
+DETALLE_FACTURA                                                                 
+UNIQUE   
+
+
+INDEX_NAME
+--------------------------------------------------------------------------------
+TABLE_NAME
+--------------------------------------------------------------------------------
+UNIQUENES
+---------
+IX_FACTURAS_CLIENTE                                                             
+FACTURAS                                                                        
+NONUNIQUE
+
+IX_FACTURAS_FECHA                                                               
+FACTURAS                                                                        
+NONUNIQUE
+
+INDEX_NAME
+--------------------------------------------------------------------------------
+TABLE_NAME
+--------------------------------------------------------------------------------
+UNIQUENES
+---------
+
+IX_FACTURAS_FORMA                                                               
+FACTURAS                                                                        
+NONUNIQUE
+
+IX_FACTURAS_SUCURSAL                                                            
+FACTURAS                                                                        
+
+INDEX_NAME
+--------------------------------------------------------------------------------
+TABLE_NAME
+--------------------------------------------------------------------------------
+UNIQUENES
+---------
+NONUNIQUE
+
+PK_FACTURAS                                                                     
+FACTURAS                                                                        
+UNIQUE   
+
+PK_FORMAS_PAGO                                                                  
+
+INDEX_NAME
+--------------------------------------------------------------------------------
+TABLE_NAME
+--------------------------------------------------------------------------------
+UNIQUENES
+---------
+FORMAS_PAGO                                                                     
+UNIQUE   
+
+UQ_FORMAS_PAGO_DESC                                                             
+FORMAS_PAGO                                                                     
+UNIQUE   
+
+
+INDEX_NAME
+--------------------------------------------------------------------------------
+TABLE_NAME
+--------------------------------------------------------------------------------
+UNIQUENES
+---------
+PK_SUCURSALES                                                                   
+SUCURSALES                                                                      
+UNIQUE   
+
+UQ_SUCURSALES_NOMBRE                                                            
+SUCURSALES                                                                      
+UNIQUE   
+
+16 rows selected. 
+
+
+COMENTARIOS
+-----------
+         37
+
+
+  COUNT(*)
+----------
+         6
+
+[codigo de salida: 0]
+

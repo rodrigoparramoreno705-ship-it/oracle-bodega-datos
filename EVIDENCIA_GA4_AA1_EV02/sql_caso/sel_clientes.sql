@@ -1,0 +1,1 @@
+SELECT * FROM clientes ORDER BY 1;

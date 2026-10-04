@@ -1,0 +1,12 @@
+### 2026-10-04 17:32:14 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql -S system/Sena2026Oracle@//localhost:1521/FREEPDB1 @/tmp/claude-0/-home-user-oracle-bodega-datos/252c59e6-767b-5120-be5d-240c0ebbdb62/scratchpad/drop.sql 2>&1 | grep -v '^Picked up' | sed 's/\x1b\[[0-9;]*m//g'
+
+User TECH_TRANSITION dropped.
+
+
+   USUARIOS_TECH 
+________________ 
+               0 
+
+[codigo de salida: 0]
+
