@@ -1,0 +1,57 @@
+### 2026-10-04 20:44:29 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql -S spring_valley/SpringV2026@//localhost:1521/FREEPDB1 @sql/01b_extraccion_load.sql 2>&1 | grep -v '^Picked up' | sed 's/\x1b\[[0-9;]*m//g'
+
+csv
+column_names on
+delimiter ,
+enclosures ""
+double off
+encoding UTF8
+row_limit off
+row_terminator default
+skip_rows 0
+skip_after_names
+
+Load data into table SPRING_VALLEY.STG_VENTAS
+batch_rows 100
+batches_per_commit 10
+clean_names transform
+column_size rounded
+commit on
+date_format 
+errors 50
+map_column_names off
+method insert
+timestamp_format 
+timestamptz_format 
+locale
+scan_rows 100
+truncate off
+unknown_columns_fail on
+
+#INFO Number of rows processed: 520
+#INFO Number of rows in error: 0
+#INFO Last row processed in final committed batch: 520
+SUCCESS: Processed without errors
+
+   FILAS_EN_STAGING 
+___________________ 
+                520 
+
+[codigo de salida: 0]
+
+### 2026-10-04 20:44:42 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql -S spring_valley/SpringV2026@//localhost:1521/FREEPDB1 @/tmp/claude-0/-home-user-oracle-bodega-datos/252c59e6-767b-5120-be5d-240c0ebbdb62/scratchpad/ev03/chk1.sql 2>&1 | grep -v '^Picked up'
+SQL Format Cleared
+
+CON_ESPACIOS
+------------
+         286
+
+
+VARIANTES_SEXO VARIANTES_PAGO
+-------------- --------------
+            10             16
+
+[codigo de salida: 0]
+

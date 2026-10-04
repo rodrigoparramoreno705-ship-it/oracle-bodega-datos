@@ -1,0 +1,37 @@
+### 2026-10-04 20:31:56 UTC
+root@cloud-vm:~# docker start oracle-free && for i in $(seq 1 80); do docker logs --since 2m oracle-free 2>&1 | grep -q 'DATABASE IS READY TO USE' && break; sleep 3; done; docker logs --since 3m oracle-free 2>&1 | grep -E 'DATABASE IS READY'; docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
+oracle-free
+DATABASE IS READY TO USE!
+NAMES         IMAGE                        STATUS              PORTS
+oracle-free   gvenzl/oracle-free:23-slim   Up About a minute   0.0.0.0:1521->1521/tcp
+[codigo de salida: 0]
+
+### 2026-10-04 20:33:18 UTC
+root@cloud-vm:~# docker pull dbeaver/cloudbeaver:latest 2>&1 | grep -E 'Digest|Status'; docker image inspect dbeaver/cloudbeaver:latest --format 'Creado: {{.Created}} | Tamano: {{.Size}} bytes'
+Digest: sha256:34b078483dac9502ed6a718a68c54368d55dd0abbc7b392d6e78b90f6a9ec3f6
+Status: Downloaded newer image for dbeaver/cloudbeaver:latest
+Creado: 2026-09-21T12:18:20.33487643Z | Tamano: 416687558 bytes
+[codigo de salida: 0]
+
+### 2026-10-04 20:34:17 UTC
+root@cloud-vm:~# docker run -d --name cloudbeaver --network host -v cloudbeaver_ws:/opt/cloudbeaver/workspace dbeaver/cloudbeaver:latest
+1641f61d41e7b51ab9774821002d18834242c0ed4d12411eb68fe6c85c2afa9b
+[codigo de salida: 0]
+
+### 2026-10-04 21:02:41 UTC
+root@cloud-vm:~# docker logs cloudbeaver 2>&1 | grep -iE 'CloudBeaver.*(version|server)|Product' | head -3; docker exec cloudbeaver bash -c 'ls /opt/cloudbeaver/server/plugins | grep -E "io.cloudbeaver.server_" | head -1'; docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'; /opt/pw-browsers/chromium-1194/chrome-linux/chrome --version; nproc; free -h | head -2; df -h / | tail -1; lsb_release -d
+Starting Cloudbeaver Server
+04-10-2026 20:34:19.959 [main] INFO  io.cloudbeaver.server.CBPlatform - Initialize web platform CBPlatform
+04-10-2026 20:34:20.389 [main] INFO  io.cloudbeaver.server.CBPlatform - Web platform initialized (430ms)
+io.cloudbeaver.server_26.2.1.202609211213.jar
+NAMES         IMAGE                        STATUS
+cloudbeaver   dbeaver/cloudbeaver:latest   Up 28 minutes
+oracle-free   gvenzl/oracle-free:23-slim   Up 30 minutes
+Chromium 141.0.7390.37 
+4
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       4.9Gi       6.9Gi       1.5Gi       5.7Gi        10Gi
+/dev/vda        252G   18G   21G  46% /
+Description:	Ubuntu 24.04.4 LTS
+[codigo de salida: 0]
+

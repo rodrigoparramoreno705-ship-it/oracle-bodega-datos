@@ -1,0 +1,9 @@
+-- VALIDACION 1: conteo de registros en cada etapa del ETL
+SELECT 'STG_VENTAS (crudo)' AS tabla, COUNT(*) AS registros FROM stg_ventas
+UNION ALL SELECT 'STG_VENTAS_LIMPIA', COUNT(*) FROM stg_ventas_limpia
+UNION ALL SELECT 'DIM_TIEMPO', COUNT(*) FROM dim_tiempo
+UNION ALL SELECT 'DIM_CLIENTE', COUNT(*) FROM dim_cliente
+UNION ALL SELECT 'DIM_PRODUCTO', COUNT(*) FROM dim_producto
+UNION ALL SELECT 'DIM_VENDEDOR', COUNT(*) FROM dim_vendedor
+UNION ALL SELECT 'DIM_SUCURSAL', COUNT(*) FROM dim_sucursal
+UNION ALL SELECT 'FACT_VENTAS', COUNT(*) FROM fact_ventas;

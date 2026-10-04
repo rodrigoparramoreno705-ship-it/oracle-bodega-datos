@@ -1,0 +1,130 @@
+time="2026-10-04T20:31:52.485257521Z" level=info msg="Starting up"
+time="2026-10-04T20:31:52.486539228Z" level=info msg="containerd not running, starting managed containerd"
+time="2026-10-04T20:31:52.490357334Z" level=info msg="started new containerd process" address=/var/run/docker/containerd/containerd.sock module=libcontainerd pid=1423
+time="2026-10-04T20:31:53.637182567Z" level=info msg="starting containerd" revision=11ce9d5f3c68c941867e82890e93e815c1304f1b version=v2.2.6
+time="2026-10-04T20:31:53.648765246Z" level=warning msg="Configuration migrated from version 2, use `containerd config migrate` to avoid migration" t="50.689µs"
+time="2026-10-04T20:31:53.648807827Z" level=info msg="loading plugin" id=io.containerd.content.v1.content type=io.containerd.content.v1
+time="2026-10-04T20:31:53.649291370Z" level=info msg="loading plugin" id=io.containerd.image-verifier.v1.bindir type=io.containerd.image-verifier.v1
+time="2026-10-04T20:31:53.649344645Z" level=info msg="loading plugin" id=io.containerd.internal.v1.opt type=io.containerd.internal.v1
+time="2026-10-04T20:31:53.649648367Z" level=info msg="loading plugin" id=io.containerd.warning.v1.deprecations type=io.containerd.warning.v1
+time="2026-10-04T20:31:53.649671447Z" level=info msg="loading plugin" id=io.containerd.mount-handler.v1.erofs type=io.containerd.mount-handler.v1
+time="2026-10-04T20:31:53.649682926Z" level=info msg="loading plugin" id=io.containerd.snapshotter.v1.blockfile type=io.containerd.snapshotter.v1
+time="2026-10-04T20:31:53.649858280Z" level=info msg="skip loading plugin" error="no scratch file generator: skip plugin" id=io.containerd.snapshotter.v1.blockfile type=io.containerd.snapshotter.v1
+time="2026-10-04T20:31:53.649876027Z" level=info msg="loading plugin" id=io.containerd.snapshotter.v1.btrfs type=io.containerd.snapshotter.v1
+time="2026-10-04T20:31:53.650054547Z" level=info msg="skip loading plugin" error="path /var/lib/docker/containerd/daemon/io.containerd.snapshotter.v1.btrfs (ext4) must be a btrfs filesystem to be used with the btrfs snapshotter: skip plugin" id=io.containerd.snapshotter.v1.btrfs type=io.containerd.snapshotter.v1
+time="2026-10-04T20:31:53.650073116Z" level=info msg="loading plugin" id=io.containerd.snapshotter.v1.devmapper type=io.containerd.snapshotter.v1
+time="2026-10-04T20:31:53.650084903Z" level=info msg="skip loading plugin" error="devmapper not configured: skip plugin" id=io.containerd.snapshotter.v1.devmapper type=io.containerd.snapshotter.v1
+time="2026-10-04T20:31:53.650091565Z" level=info msg="loading plugin" id=io.containerd.snapshotter.v1.erofs type=io.containerd.snapshotter.v1
+time="2026-10-04T20:31:53.650432437Z" level=info msg="loading plugin" id=io.containerd.snapshotter.v1.native type=io.containerd.snapshotter.v1
+time="2026-10-04T20:31:53.650601058Z" level=info msg="loading plugin" id=io.containerd.snapshotter.v1.overlayfs type=io.containerd.snapshotter.v1
+time="2026-10-04T20:31:53.651213573Z" level=info msg="loading plugin" id=io.containerd.snapshotter.v1.zfs type=io.containerd.snapshotter.v1
+time="2026-10-04T20:31:53.651353311Z" level=info msg="skip loading plugin" error="lstat /var/lib/docker/containerd/daemon/io.containerd.snapshotter.v1.zfs: no such file or directory: skip plugin" id=io.containerd.snapshotter.v1.zfs type=io.containerd.snapshotter.v1
+time="2026-10-04T20:31:53.651379229Z" level=info msg="loading plugin" id=io.containerd.event.v1.exchange type=io.containerd.event.v1
+time="2026-10-04T20:31:53.651441465Z" level=info msg="loading plugin" id=io.containerd.monitor.task.v1.cgroups type=io.containerd.monitor.task.v1
+time="2026-10-04T20:31:53.652032958Z" level=info msg="loading plugin" id=io.containerd.metadata.v1.bolt type=io.containerd.metadata.v1
+time="2026-10-04T20:31:53.652135765Z" level=info msg="metadata content store policy set" policy=shared
+time="2026-10-04T20:31:53.655816374Z" level=info msg="loading plugin" id=io.containerd.gc.v1.scheduler type=io.containerd.gc.v1
+time="2026-10-04T20:31:53.655972429Z" level=info msg="loading plugin" id=io.containerd.nri.v1.nri type=io.containerd.nri.v1
+time="2026-10-04T20:31:53.656294082Z" level=info msg="built-in NRI default validator is disabled"
+time="2026-10-04T20:31:53.656327248Z" level=info msg="runtime interface created"
+time="2026-10-04T20:31:53.656333757Z" level=info msg="created NRI interface"
+time="2026-10-04T20:31:53.656342262Z" level=info msg="loading plugin" id=io.containerd.differ.v1.erofs type=io.containerd.differ.v1
+time="2026-10-04T20:31:53.656639357Z" level=info msg="skip loading plugin" error="failed to check mkfs.erofs availability: failed to run mkfs.erofs --help: exec: \"mkfs.erofs\": executable file not found in $PATH: skip plugin" id=io.containerd.differ.v1.erofs type=io.containerd.differ.v1
+time="2026-10-04T20:31:53.656660111Z" level=info msg="loading plugin" id=io.containerd.mount-manager.v1.bolt type=io.containerd.mount-manager.v1
+time="2026-10-04T20:31:53.657119422Z" level=info msg="loading plugin" id=io.containerd.differ.v1.walking type=io.containerd.differ.v1
+time="2026-10-04T20:31:53.657147492Z" level=info msg="loading plugin" id=io.containerd.lease.v1.manager type=io.containerd.lease.v1
+time="2026-10-04T20:31:53.657157119Z" level=info msg="loading plugin" id=io.containerd.service.v1.containers-service type=io.containerd.service.v1
+time="2026-10-04T20:31:53.657193828Z" level=info msg="loading plugin" id=io.containerd.service.v1.content-service type=io.containerd.service.v1
+time="2026-10-04T20:31:53.657228045Z" level=info msg="loading plugin" id=io.containerd.service.v1.diff-service type=io.containerd.service.v1
+time="2026-10-04T20:31:53.657249017Z" level=info msg="loading plugin" id=io.containerd.service.v1.images-service type=io.containerd.service.v1
+time="2026-10-04T20:31:53.657266900Z" level=info msg="loading plugin" id=io.containerd.service.v1.introspection-service type=io.containerd.service.v1
+time="2026-10-04T20:31:53.657283663Z" level=info msg="loading plugin" id=io.containerd.service.v1.namespaces-service type=io.containerd.service.v1
+time="2026-10-04T20:31:53.657300020Z" level=info msg="loading plugin" id=io.containerd.service.v1.snapshots-service type=io.containerd.service.v1
+time="2026-10-04T20:31:53.657333145Z" level=info msg="loading plugin" id=io.containerd.shim.v1.manager type=io.containerd.shim.v1
+time="2026-10-04T20:31:53.657351632Z" level=info msg="loading plugin" id=io.containerd.runtime.v2.task type=io.containerd.runtime.v2
+time="2026-10-04T20:31:53.658664729Z" level=info msg="connecting to shim 4261587fd73f28bd9a316abb786ad087fbb5feb624f91bfcd9134784055bbde1" address="unix:///run/containerd/s/8918ec3f3d058f91fb7a6fc123dcc31e0b1f6ffb0769821c0bb27a388f7c5709" namespace=moby protocol=ttrpc version=3
+time="2026-10-04T20:31:53.659202698Z" level=error msg="copy shim log after reload" error="read /proc/self/fd/13: file already closed" namespace=moby
+time="2026-10-04T20:31:53.659246754Z" level=info msg="cleaning up after shim disconnected" id=4261587fd73f28bd9a316abb786ad087fbb5feb624f91bfcd9134784055bbde1 namespace=moby
+time="2026-10-04T20:31:53.659415791Z" level=info msg="cleaning up dead shim" id=4261587fd73f28bd9a316abb786ad087fbb5feb624f91bfcd9134784055bbde1 namespace=moby
+time="2026-10-04T20:31:54.515190908Z" level=error msg="failed to load shim /var/run/docker/containerd/daemon/io.containerd.runtime.v2.task/moby/4261587fd73f28bd9a316abb786ad087fbb5feb624f91bfcd9134784055bbde1" error="unable to load shim \"4261587fd73f28bd9a316abb786ad087fbb5feb624f91bfcd9134784055bbde1\": unable to make connection: failed to create TTRPC connection: dial unix /run/containerd/s/8918ec3f3d058f91fb7a6fc123dcc31e0b1f6ffb0769821c0bb27a388f7c5709: connect: connection refused" namespace=moby
+time="2026-10-04T20:31:54.515337743Z" level=info msg="loading plugin" id=io.containerd.service.v1.tasks-service type=io.containerd.service.v1
+time="2026-10-04T20:31:54.515541671Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.containers type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.515568273Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.content type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.515579733Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.diff type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.515607888Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.events type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.515625889Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.images type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.515644484Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.introspection type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.515664954Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.leases type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.515691387Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.mounts type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.515712237Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.namespaces type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.515731312Z" level=info msg="loading plugin" id=io.containerd.sandbox.store.v1.local type=io.containerd.sandbox.store.v1
+time="2026-10-04T20:31:54.515748100Z" level=info msg="loading plugin" id=io.containerd.transfer.v1.local type=io.containerd.transfer.v1
+time="2026-10-04T20:31:54.515833859Z" level=info msg="loading plugin" id=io.containerd.cri.v1.images type=io.containerd.cri.v1
+time="2026-10-04T20:31:54.516010303Z" level=info msg="Get image filesystem path \"/var/lib/docker/containerd/daemon/io.containerd.snapshotter.v1.overlayfs\" for snapshotter \"overlayfs\""
+time="2026-10-04T20:31:54.516034027Z" level=info msg="Start snapshots syncer"
+time="2026-10-04T20:31:54.516095826Z" level=info msg="loading plugin" id=io.containerd.cri.v1.runtime type=io.containerd.cri.v1
+time="2026-10-04T20:31:54.516522242Z" level=info msg="starting cri plugin" config="{\"containerd\":{\"defaultRuntimeName\":\"runc\",\"runtimes\":{\"runc\":{\"runtimeType\":\"io.containerd.runc.v2\",\"runtimePath\":\"\",\"PodAnnotations\":null,\"ContainerAnnotations\":null,\"options\":{\"BinaryName\":\"\",\"CriuImagePath\":\"\",\"CriuWorkPath\":\"\",\"IoGid\":0,\"IoUid\":0,\"NoNewKeyring\":false,\"Root\":\"\",\"ShimCgroup\":\"\",\"SystemdCgroup\":false},\"privileged_without_host_devices\":false,\"privileged_without_host_devices_all_devices_allowed\":false,\"cgroupWritable\":false,\"baseRuntimeSpec\":\"\",\"cniConfDir\":\"\",\"cniMaxConfNum\":0,\"snapshotter\":\"\",\"sandboxer\":\"podsandbox\",\"io_type\":\"\"}},\"ignoreBlockIONotEnabledErrors\":false,\"ignoreRdtNotEnabledErrors\":false},\"cni\":{\"binDir\":\"\",\"binDirs\":[\"/opt/cni/bin\"],\"confDir\":\"/etc/cni/net.d\",\"maxConfNum\":1,\"setupSerially\":false,\"confTemplate\":\"\",\"ipPref\":\"\",\"useInternalLoopback\":false},\"enableSelinux\":false,\"selinuxCategoryRange\":1024,\"maxContainerLogLineSize\":16384,\"disableApparmor\":false,\"restrictOOMScoreAdj\":false,\"disableProcMount\":false,\"unsetSeccompProfile\":\"\",\"tolerateMissingHugetlbController\":true,\"disableHugetlbController\":true,\"device_ownership_from_security_context\":false,\"ignoreImageDefinedVolumes\":false,\"netnsMountsUnderStateDir\":false,\"enableUnprivilegedPorts\":true,\"enableUnprivilegedICMP\":true,\"enableCDI\":true,\"cdiSpecDirs\":[\"/etc/cdi\",\"/var/run/cdi\"],\"drainExecSyncIOTimeout\":\"0s\",\"ignoreDeprecationWarnings\":null,\"containerdRootDir\":\"/var/lib/docker/containerd/daemon\",\"containerdEndpoint\":\"/var/run/docker/containerd/containerd.sock\",\"rootDir\":\"/var/lib/docker/containerd/daemon/io.containerd.grpc.v1.cri\",\"stateDir\":\"/var/run/docker/containerd/daemon/io.containerd.grpc.v1.cri\"}"
+time="2026-10-04T20:31:54.516693226Z" level=info msg="loading plugin" id=io.containerd.podsandbox.controller.v1.podsandbox type=io.containerd.podsandbox.controller.v1
+time="2026-10-04T20:31:54.516917146Z" level=info msg="loading plugin" id=io.containerd.sandbox.controller.v1.shim type=io.containerd.sandbox.controller.v1
+time="2026-10-04T20:31:54.517754543Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.sandbox-controllers type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.517806395Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.sandboxes type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.517828254Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.snapshots type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.517838370Z" level=info msg="loading plugin" id=io.containerd.streaming.v1.manager type=io.containerd.streaming.v1
+time="2026-10-04T20:31:54.517849004Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.streaming type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.517862575Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.tasks type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.517874635Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.transfer type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.517884365Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.version type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.517904744Z" level=info msg="loading plugin" id=io.containerd.monitor.container.v1.restart type=io.containerd.monitor.container.v1
+time="2026-10-04T20:31:54.518081158Z" level=info msg="loading plugin" id=io.containerd.tracing.processor.v1.otlp type=io.containerd.tracing.processor.v1
+time="2026-10-04T20:31:54.518105190Z" level=info msg="skip loading plugin" error="skip plugin: tracing endpoint not configured" id=io.containerd.tracing.processor.v1.otlp type=io.containerd.tracing.processor.v1
+time="2026-10-04T20:31:54.518113056Z" level=info msg="loading plugin" id=io.containerd.internal.v1.tracing type=io.containerd.internal.v1
+time="2026-10-04T20:31:54.518128880Z" level=info msg="skip loading plugin" error="skip plugin: tracing endpoint not configured" id=io.containerd.internal.v1.tracing type=io.containerd.internal.v1
+time="2026-10-04T20:31:54.518143058Z" level=info msg="loading plugin" id=io.containerd.ttrpc.v1.otelttrpc type=io.containerd.ttrpc.v1
+time="2026-10-04T20:31:54.518151937Z" level=info msg="loading plugin" id=io.containerd.grpc.v1.healthcheck type=io.containerd.grpc.v1
+time="2026-10-04T20:31:54.519454120Z" level=info msg=serving... address=/var/run/docker/containerd/containerd-debug.sock
+time="2026-10-04T20:31:54.519741230Z" level=info msg=serving... address=/var/run/docker/containerd/containerd.sock.ttrpc
+time="2026-10-04T20:31:54.519928419Z" level=info msg=serving... address=/var/run/docker/containerd/containerd.sock
+time="2026-10-04T20:31:54.519992935Z" level=info msg="containerd successfully booted in 0.884315s"
+time="2026-10-04T20:31:54.530030261Z" level=info msg="OTEL tracing is not configured, using no-op tracer provider"
+time="2026-10-04T20:31:54.530555920Z" level=info msg="CDI directory does not exist, skipping" dir=/etc/cdi
+time="2026-10-04T20:31:54.530583892Z" level=info msg="CDI directory does not exist, skipping" dir=/var/run/cdi
+time="2026-10-04T20:31:54.569787663Z" level=info msg="Creating a containerd client" address=/var/run/docker/containerd/containerd.sock timeout=1m0s
+time="2026-10-04T20:31:54.752578900Z" level=info msg="Loading containers: start."
+time="2026-10-04T20:31:54.754930806Z" level=info msg="NRI is disabled"
+time="2026-10-04T20:31:54.755014445Z" level=info msg="Starting daemon with containerd snapshotter integration enabled"
+time="2026-10-04T20:31:54.760397910Z" level=info msg="Restoring containers: start."
+time="2026-10-04T20:31:54.974135952Z" level=error msg="error unmounting container" container=4261587fd73f28bd9a316abb786ad087fbb5feb624f91bfcd9134784055bbde1 error="layer not mounted"
+time="2026-10-04T20:31:55.670224787Z" level=info msg="Deleting nftables IPv4 rules" error="running nft: /dev/stdin:1:17-30: Error: Could not process rule: No such file or directory\ndelete table ip docker-bridges\n                ^^^^^^^^^^^^^^\n exit status 1"
+time="2026-10-04T20:31:55.697563388Z" level=info msg="Deleting nftables IPv6 rules" error="running nft: /dev/stdin:1:18-31: Error: Could not process rule: No such file or directory\ndelete table ip6 docker-bridges\n                 ^^^^^^^^^^^^^^\n exit status 1"
+time="2026-10-04T20:31:55.903832999Z" level=info msg="failed to read ipv6 net.ipv6.conf.<bridge>.accept_ra" bridge=docker0 syspath=/proc/sys/net/ipv6/conf/docker0/accept_ra
+time="2026-10-04T20:31:55.904515069Z" level=info msg="failed to read ipv6 net.ipv6.conf.<bridge>.accept_ra" bridge=docker0 syspath=/proc/sys/net/ipv6/conf/docker0/accept_ra
+time="2026-10-04T20:31:56.078151940Z" level=info msg="Removing stale sandbox" cid=4261587fd73f isRestore=false sid=dc3fd0315516
+time="2026-10-04T20:31:56.125012624Z" level=warning msg="Failed deleting service host entries to the running container: open : no such file or directory"
+time="2026-10-04T20:31:56.296120132Z" level=info msg="failed to read ipv6 net.ipv6.conf.<bridge>.accept_ra" bridge=docker0 syspath=/proc/sys/net/ipv6/conf/docker0/accept_ra
+time="2026-10-04T20:31:56.334389811Z" level=warning msg="error locating sandbox id dc3fd03155166098f461889972f6a7bc63a259c9c549a283e4ce62d19d009209: sandbox dc3fd03155166098f461889972f6a7bc63a259c9c549a283e4ce62d19d009209 not found"
+time="2026-10-04T20:31:56.335101870Z" level=info msg="Loading containers: done."
+time="2026-10-04T20:31:56.346757306Z" level=warning msg="WARNING: Support for cgroup v1 is deprecated and planned to be removed by no later than May 2029 (https://github.com/moby/moby/issues/51111)"
+time="2026-10-04T20:31:56.346815583Z" level=info msg="Docker daemon" commit=3d80467 containerd-snapshotter=true storage-driver=overlayfs version=29.6.2
+time="2026-10-04T20:31:56.347381171Z" level=info msg="Initializing buildkit"
+time="2026-10-04T20:31:56.486860169Z" level=info msg="Completed buildkit initialization"
+time="2026-10-04T20:31:56.493574122Z" level=info msg="Daemon has completed initialization"
+time="2026-10-04T20:31:56.493677805Z" level=info msg="API listen on /var/run/docker.sock"
+time="2026-10-04T20:31:56.693723463Z" level=info msg="connecting to shim 4261587fd73f28bd9a316abb786ad087fbb5feb624f91bfcd9134784055bbde1" address="unix:///run/containerd/s/8918ec3f3d058f91fb7a6fc123dcc31e0b1f6ffb0769821c0bb27a388f7c5709" namespace=moby protocol=ttrpc version=3
+time="2026-10-04T20:31:57.231347333Z" level=info msg="sbJoin: gwep4 ''->'3ad0755bc37c', gwep6 ''->''" eid=3ad0755bc37c ep=oracle-free net=bridge nid=26d3260f4fee
+time="2026-10-04T20:33:21.859756244Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 8.581559ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:21.863130875Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 12.039243ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:21.875938540Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 24.838149ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:21.880087126Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 28.971932ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:21.887406833Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 36.223519ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:21.891412220Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 40.328791ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:21.916003733Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 64.918255ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:21.923038292Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 71.954917ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:21.973844422Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 122.757034ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:22.005823648Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 154.728875ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:22.086818967Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 235.716642ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:22.150787779Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 299.692852ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:22.178976655Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 327.883217ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:22.262806109Z" level=error msg="(*service).Write failed" error="rpc error: code = Unavailable desc = ref moby/1/layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 locked for 411.710503ms (since 2026-10-04 20:33:21.851068483 +0000 UTC m=+88.358257721): unavailable" expected="sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" ref="layer-sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1" total=32
+time="2026-10-04T20:33:32.907817632Z" level=info msg="image pulled" digest="sha256:34b078483dac9502ed6a718a68c54368d55dd0abbc7b392d6e78b90f6a9ec3f6" remote="docker.io/dbeaver/cloudbeaver:latest"
+time="2026-10-04T20:34:17.471865353Z" level=info msg="connecting to shim 1641f61d41e7b51ab9774821002d18834242c0ed4d12411eb68fe6c85c2afa9b" address="unix:///run/containerd/s/ff61ad6b0c6d18437dc37b1f85321cfb461064397b0bd76671b317f47b5eff12" namespace=moby protocol=ttrpc version=3
+time="2026-10-04T20:34:17.540640158Z" level=info msg="sbJoin: gwep4 ''->'', gwep6 ''->''" eid=fd1469eb4e63 ep=cloudbeaver net=host nid=3f8d0977175b

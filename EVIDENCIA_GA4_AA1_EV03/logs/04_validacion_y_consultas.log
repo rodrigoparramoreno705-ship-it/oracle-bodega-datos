@@ -1,0 +1,146 @@
+### 2026-10-04 21:02:13 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql -S spring_valley/SpringV2026@//localhost:1521/FREEPDB1 @sql/99_ejecutar_validacion_y_consultas.sql 2>&1 | grep -v '^Picked up' | sed 's/\x1b\[[0-9;]*m//g'
+
+TABLA                    REGISTROS 
+_____________________ ____________ 
+STG_VENTAS (crudo)             520 
+STG_VENTAS_LIMPIA              510 
+DIM_TIEMPO                     227 
+DIM_CLIENTE                     20 
+DIM_PRODUCTO                    12 
+DIM_VENDEDOR                     8 
+DIM_SUCURSAL                     4 
+FACT_VENTAS                    510 
+
+8 rows selected. 
+
+
+CONTROL                                        RESULTADO                                                   
+______________________________________________ ___________________________________________________________ 
+Lineas duplicadas en FACT_VENTAS               0                                                           
+Fechas o sexo nulos en staging limpio          0                                                           
+Valores distintos de SEXO                      F, M                                                        
+Valores distintos de FORMA_PAGO                Efectivo, Transferencia, Tarjeta crédito, Tarjeta débito    
+Rango de fechas                                2023-01-02 a 2025-12-24                                     
+Ventas huerfanas (sin cliente)                 0                                                           
+Ventas huerfanas (sin producto)                0                                                           
+Total en staging limpio (cantidad x precio)    25,989,200                                                  
+Total en FACT_VENTAS (valor_total)             25,989,200                                                  
+
+9 rows selected. 
+
+
+TABLA           RESTRICCION         TIPO           COLUMNA        TABLA_REFERENCIADA    
+_______________ ___________________ ______________ ______________ _____________________ 
+DIM_CLIENTE     PK_DIM_CLIENTE      PRIMARY KEY    ID_CLIENTE                           
+DIM_PRODUCTO    PK_DIM_PRODUCTO     PRIMARY KEY    ID_PRODUCTO                          
+DIM_SUCURSAL    PK_DIM_SUCURSAL     PRIMARY KEY    ID_SUCURSAL                          
+DIM_TIEMPO      PK_DIM_TIEMPO       PRIMARY KEY    ID_TIEMPO                            
+DIM_VENDEDOR    PK_DIM_VENDEDOR     PRIMARY KEY    ID_VENDEDOR                          
+FACT_VENTAS     PK_FACT_VENTAS      PRIMARY KEY    ID_VENTA                             
+FACT_VENTAS     FK_FACT_SUCURSAL    FOREIGN KEY    ID_SUCURSAL    DIM_SUCURSAL          
+FACT_VENTAS     FK_FACT_PRODUCTO    FOREIGN KEY    ID_PRODUCTO    DIM_PRODUCTO          
+FACT_VENTAS     FK_FACT_CLIENTE     FOREIGN KEY    ID_CLIENTE     DIM_CLIENTE           
+FACT_VENTAS     FK_FACT_TIEMPO      FOREIGN KEY    ID_TIEMPO      DIM_TIEMPO            
+FACT_VENTAS     FK_FACT_VENDEDOR    FOREIGN KEY    ID_VENDEDOR    DIM_VENDEDOR          
+
+11 rows selected. 
+
+
+Error starting at line : 3 File @ /home/user/oracle-bodega-datos/EVIDENCIA_GA4_AA1_EV03/sql/11d_prueba_integridad.sql
+In command -
+INSERT INTO fact_ventas (numero_factura, id_tiempo, id_cliente, id_producto, id_vendedor, id_sucursal,
+                         forma_pago, cantidad, precio_unitario, valor_total)
+VALUES ('FV-99999', 20250102, 9999, 1, 1, 1, 'Efectivo', 1, 2500, 2500)
+Error report -
+ORA-02291: integrity constraint (SPRING_VALLEY.FK_FACT_CLIENTE) violated - parent key not found
+Help: https://docs.oracle.com/error-help/db/ora-02291/
+
+   FACTURAS    LINEAS_VENDIDAS    UNIDADES    VENTAS_TOTALES    TICKET_PROMEDIO    CLIENTES PRIMERA_VENTA    ULTIMA_VENTA    
+___________ __________________ ___________ _________________ __________________ ___________ ________________ _______________ 
+        255                510        3638          25989200             101918          20 02-JAN-23        24-DEC-25       
+
+
+   ANIO    FACTURAS    UNIDADES      VENTAS    PROMEDIO_POR_LINEA    CRECIMIENTO_PCT 
+_______ ___________ ___________ ___________ _____________________ __________________ 
+   2023          70         873     6419400                 46857                    
+   2024          85        1243     8707400                 48374               35.6 
+   2025         100        1522    10862400                 56282               24.7 
+
+
+CODIGO_PRODUCTO    NOMBRE_PRODUCTO              CATEGORIA                 UNIDADES     VENTAS    POSICION 
+__________________ ____________________________ ______________________ ___________ __________ ___________ 
+P011               MIX DE FRUTOS SECOS 200 G    SNACKS SALUDABLES              302    4801800           1 
+P010               BARRA DE CEREAL X6           SNACKS SALUDABLES              347    4337500           2 
+P012               GALLETAS INTEGRALES X12      SNACKS SALUDABLES              295    2625500           3 
+P004               JUGO NATURAL NARANJA 1 L     JUGOS                          315    2457000           4 
+P005               JUGO NATURAL MANGO 1 L       JUGOS                          314    2355000           5 
+P009               BEBIDA PROTEICA 330 ML       BEBIDAS FUNCIONALES            229    2244200           6 
+P008               BEBIDA ISOTONICA 600 ML      BEBIDAS FUNCIONALES            356    1851200           7 
+P007               TE NEGRO LIMON 500 ML        TES                            316    1358800           8 
+P003               AGUA CON GAS 600 ML          AGUAS                          363    1089000           9 
+P006               TE VERDE FRIO 500 ML         TES                            237    1066500          10 
+P002               AGUA MANANTIAL 1.5 L         AGUAS                          231     970200          11 
+P001               AGUA MANANTIAL 600 ML        AGUAS                          333     832500          12 
+
+12 rows selected. 
+
+
+NOMBRE_SUCURSAL                     CIUDAD             FACTURAS     VENTAS    PARTICIPACION_PCT    TICKET_PROMEDIO 
+___________________________________ _______________ ___________ __________ ____________________ __________________ 
+Spring Valley Medellín Laureles     Medellín                 75    7326000                 28.2              97680 
+Spring Valley Cali Norte            Cali                     63    6721100                 25.9             106684 
+Spring Valley Barranquilla Prado    Barranquilla             60    6491300                   25             108188 
+Spring Valley Bogotá Centro         Bogotá                   57    5450800                   21              95628 
+
+
+   RANKING NOMBRE_VENDEDOR          NOMBRE_SUCURSAL                        FACTURAS     VENTAS    TICKET_PROMEDIO 
+__________ ________________________ ___________________________________ ___________ __________ __________________ 
+         1 Fabián Alberto Rincón    Spring Valley Cali Norte                     31    4021000             129710 
+         2 Daniel Esteban Correa    Spring Valley Medellín Laureles              36    3882800             107856 
+         3 Claudia Marcela Henao    Spring Valley Medellín Laureles              39    3443200              88287 
+         4 Yesenia Paola Barrios    Spring Valley Barranquilla Prado             30    3258100             108603 
+         5 Álvaro José Montes       Spring Valley Barranquilla Prado             30    3233200             107773 
+         6 Martha Elena Ríos        Spring Valley Bogotá Centro                  28    2726200              97364 
+         7 Juan Pablo Arango        Spring Valley Bogotá Centro                  29    2724600              93952 
+         8 Gloria Inés Muñoz        Spring Valley Cali Norte                     32    2700100              84378 
+
+8 rows selected. 
+
+
+NOMBRE_CLIENTE           SEXO    CIUDAD             COMPRAS    VALOR_COMPRADO    TICKET_PROMEDIO 
+________________________ _______ _______________ __________ _________________ __________________ 
+Julián David Pardo       M       Cali                    12           2208800             184067 
+Hernán Darío Ospina      M       Barranquilla            15           2118100             141207 
+Óscar Iván Londoño       M       Bogotá                  12           1934900             161242 
+Luisa Fernanda Castro    F       Cali                    18           1782000              99000 
+Andrés Felipe Silva      M       Bogotá                  15           1706300             113753 
+Ricardo José Peña        M       Barranquilla            16           1678800             104925 
+Andrea Milena Rojas      F       Bogotá                  14           1631400             116529 
+Sebastián Álvarez Gil    M       Medellín                21           1448200              68962 
+Paola Andrea Vargas      F       Barranquilla            11           1357300             123391 
+Carlos Andrés Mejía      M       Bogotá                  13           1253100              96392 
+
+10 rows selected. 
+
+
+SEXO            CLIENTES    COMPRAS      VENTAS    PARTICIPACION_PCT 
+____________ ___________ __________ ___________ ____________________ 
+Masculino             10        137    14734300                 56.7 
+Femenino              10        118    11254900                 43.3 
+
+
+FORMA_PAGO            FACTURAS     VENTAS    PARTICIPACION_PCT    TICKET_PROMEDIO 
+__________________ ___________ __________ ____________________ __________________ 
+Tarjeta crédito             86    9987000                 38.4             116128 
+Efectivo                    91    8335100                 32.1              91595 
+Tarjeta débito              37    3977600                 15.3             107503 
+Transferencia               41    3689500                 14.2              89988 
+
+
+   FACT_VENTAS_DESPUES_DE_PRUEBA 
+________________________________ 
+                             510 
+
+[codigo de salida: 0]
+

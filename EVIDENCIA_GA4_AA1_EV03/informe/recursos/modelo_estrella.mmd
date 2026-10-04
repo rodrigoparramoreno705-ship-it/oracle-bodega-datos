@@ -1,0 +1,54 @@
+erDiagram
+    DIM_TIEMPO ||--o{ FACT_VENTAS : "cuando"
+    DIM_CLIENTE ||--o{ FACT_VENTAS : "quien compra"
+    DIM_PRODUCTO ||--o{ FACT_VENTAS : "que se vende"
+    DIM_VENDEDOR ||--o{ FACT_VENTAS : "quien vende"
+    DIM_SUCURSAL ||--o{ FACT_VENTAS : "donde"
+    FACT_VENTAS {
+        NUMBER id_venta PK
+        VARCHAR2 numero_factura "dimension degenerada"
+        NUMBER id_tiempo FK
+        NUMBER id_cliente FK
+        NUMBER id_producto FK
+        NUMBER id_vendedor FK
+        NUMBER id_sucursal FK
+        VARCHAR2 forma_pago "CHECK catalogo"
+        NUMBER cantidad "metrica"
+        NUMBER precio_unitario "metrica"
+        NUMBER valor_total "metrica"
+    }
+    DIM_TIEMPO {
+        NUMBER id_tiempo PK "AAAAMMDD"
+        DATE fecha
+        NUMBER anio
+        NUMBER trimestre
+        NUMBER mes
+        VARCHAR2 nombre_mes
+        NUMBER dia
+        VARCHAR2 dia_semana
+    }
+    DIM_CLIENTE {
+        NUMBER id_cliente PK
+        VARCHAR2 codigo_cliente "UNIQUE"
+        VARCHAR2 nombre_cliente
+        CHAR sexo "M o F"
+        VARCHAR2 ciudad
+    }
+    DIM_PRODUCTO {
+        NUMBER id_producto PK
+        VARCHAR2 codigo_producto "UNIQUE"
+        VARCHAR2 nombre_producto
+        VARCHAR2 categoria
+        NUMBER precio_lista
+    }
+    DIM_VENDEDOR {
+        NUMBER id_vendedor PK
+        VARCHAR2 codigo_vendedor "UNIQUE"
+        VARCHAR2 nombre_vendedor
+    }
+    DIM_SUCURSAL {
+        NUMBER id_sucursal PK
+        VARCHAR2 codigo_sucursal "UNIQUE"
+        VARCHAR2 nombre_sucursal
+        VARCHAR2 ciudad
+    }

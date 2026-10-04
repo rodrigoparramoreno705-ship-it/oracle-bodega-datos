@@ -1,0 +1,18 @@
+### 2026-10-04 20:33:55 UTC
+root@cloud-vm:~# TERM=dumb /opt/oracle-tools/sqlcl/bin/sql -S system/Sena2026Oracle@//localhost:1521/FREEPDB1 @sql/00_crear_esquema.sql 2>&1 | grep -v '^Picked up' | sed 's/\x1b\[[0-9;]*m//g'
+
+User SPRING_VALLEY dropped.
+
+
+User SPRING_VALLEY created.
+
+
+Grant succeeded.
+
+
+USERNAME         ACCOUNT_STATUS    DEFAULT_TABLESPACE    
+________________ _________________ _____________________ 
+SPRING_VALLEY    OPEN              USERS                 
+
+[codigo de salida: 0]
+
